@@ -117,8 +117,8 @@ def unblock_all() -> int:
     try:
         result = subprocess.run(
             [
-                "netsh", "advfirewall", "firewall", "delete", "rule",
-                "name=all",
+                "powershell", "-Command",
+                "Remove-NetFirewallRule -DisplayName 'NetSentinel Block *'"
             ],
             capture_output=True,
             text=True,
