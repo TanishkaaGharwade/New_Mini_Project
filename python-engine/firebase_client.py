@@ -1,5 +1,5 @@
 """
-firebase_client.py — Firestore Writer for NetSentinel
+firebase_client.py — Firestore Writer for CyberSentinel
 =====================================================
 Writes threat events and live stats to Firebase Firestore.
 React dashboard reads these via onSnapshot() in real-time.
@@ -20,7 +20,7 @@ import os
 import logging
 from datetime import datetime, timezone
 
-logger = logging.getLogger("netsentinel.firebase")
+logger = logging.getLogger("cybersentinel.firebase")
 
 # Lazy initialization — Firebase only imported if cred file exists
 _db         = None
@@ -87,7 +87,7 @@ def log_threat(src_ip: str, dst_ip: str, src_port, dst_port,
 
     # Always print to console
     print(
-        f"[THREAT] {now[:19]}  {src_ip} → {dst_ip}  "
+        f"[THREAT] {now[:19]}  {src_ip} -> {dst_ip}  "
         f"| {attack_label.upper()}  | blocked={was_blocked}"
     )
 

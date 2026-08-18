@@ -1,5 +1,5 @@
 """
-NetSentinel — Model Diagnostic Test
+CyberSentinel — Model Diagnostic Test
 ====================================
 Run this BEFORE building anything else.
 It tests whether best_model.pkl correctly classifies
@@ -127,7 +127,7 @@ test_cases = [
 # ─────────────────────────────────────────────────────────────────
 def run_tests():
     print("\n" + "="*65)
-    print("  NetSentinel — Model Diagnostic Test")
+    print("  CyberSentinel — Model Diagnostic Test")
     print("="*65)
 
     # Check files exist

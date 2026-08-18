@@ -38,7 +38,7 @@ export default function DashboardPage() {
                   Security Command Center
                 </h1>
                 <p style={{ color: '#64748b', fontSize: 13 }}>
-                  Real-Time Network Intrusion Detection & Automated Prevention (NetSentinel Engine)
+                  Real-Time Network Intrusion Detection & Automated Prevention (CyberSentinel Engine)
                 </p>
               </div>
 

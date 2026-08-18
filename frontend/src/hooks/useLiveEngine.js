@@ -21,7 +21,7 @@ export function useLiveEngine() {
         eventSource = new EventSource('http://localhost:5000/events')
 
         eventSource.onopen = () => {
-          console.log('✅ Connected to NetSentinel Python Engine (http://localhost:5000/events)')
+          console.log('✅ Connected to CyberSentinel Python Engine (http://localhost:5000/events)')
           setIsConnected(true)
         }
 

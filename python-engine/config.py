@@ -1,5 +1,5 @@
 """
-config.py — Central configuration for NetSentinel Python Engine
+config.py — Central configuration for CyberSentinel Python Engine
 All tunable parameters live here.
 """
 

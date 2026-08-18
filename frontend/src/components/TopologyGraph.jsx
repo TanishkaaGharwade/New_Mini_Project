@@ -9,11 +9,11 @@ export default function TopologyGraph({ threats = [] }) {
   useEffect(() => {
     if (!containerRef.current) return
 
-    // Base nodes: Target Machine (NetSentinel Laptop)
+    // Base nodes: Target Machine (CyberSentinel Laptop)
     const nodesArray = [
       {
         id: 'target',
-        label: 'NetSentinel Machine\n(192.168.1.20)',
+        label: 'CyberSentinel Machine\n(192.168.1.20)',
         shape: 'box',
         color: { background: '#0d1526', border: '#00d4ff', highlight: { background: '#0f1f38', border: '#00d4ff' } },
         font: { color: '#00d4ff', face: 'Inter', size: 12, multi: true },

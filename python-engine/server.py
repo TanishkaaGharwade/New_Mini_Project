@@ -20,7 +20,7 @@ from urllib.parse import parse_qs, urlparse
 
 from blocker import unblock_ip
 
-logger = logging.getLogger("netsentinel.server")
+logger = logging.getLogger("cybersentinel.server")
 
 # Event queue for connected SSE clients
 _sse_clients = set()

@@ -1,6 +1,6 @@
-# 🛡️ NetSentinel — ML-Based Network Intrusion Detection & Automated Prevention System
+# 🛡️ CyberSentinel — ML-Based Network Intrusion Detection & Automated Prevention System
 
-NetSentinel is a real-time **Intrusion Prevention System (IPS)** that combines live Scapy packet sniffing, Random Forest Machine Learning (trained on 21 NSL-KDD features across 20 attack categories), active Windows Firewall (`netsh advfirewall`) blocking, and a modern React 19 cybersecurity dashboard with Gemini AI Threat Analysis.
+CyberSentinel is a real-time **Intrusion Prevention System (IPS)** that combines live Scapy packet sniffing, Random Forest Machine Learning (trained on 21 NSL-KDD features across 20 attack categories), active Windows Firewall (`netsh advfirewall`) blocking, and a modern React 19 cybersecurity dashboard with Gemini AI Threat Analysis.
 
 ---
 

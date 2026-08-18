@@ -1,8 +1,8 @@
 """
-sniffer.py — Live Packet Capture for NetSentinel
+sniffer.py — Live Packet Capture for CyberSentinel
 =================================================
 Pattern: Repo 2 (Vanshika110/network-monitor-dashboard) capture.py
-Threading: Repo 1 (21Sandesh/NetSentinel) PacketCapture.py
+Threading: Repo 1 (21Sandesh/CyberSentinel) PacketCapture.py
 
 Key differences from original repo:
   - Uses Scapy sniff() instead of PyShark (no Wireshark dependency)

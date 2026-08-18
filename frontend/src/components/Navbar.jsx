@@ -21,7 +21,7 @@ export default function Navbar({ totalAttacks = 0, isConnected = false }) {
           <Shield size={18} color="#fff" />
         </div>
         <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.3px' }}>
-          Net<span style={{ color: '#00d4ff' }}>Sentinel</span>
+          Cyber<span style={{ color: '#00d4ff' }}>Sentinel</span>
         </span>
       </div>
 

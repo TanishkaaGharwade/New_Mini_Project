@@ -1,5 +1,5 @@
 """
-simulate_attack.py — Attack Simulation Generator for NetSentinel Demo
+simulate_attack.py — Attack Simulation Generator for CyberSentinel Demo
 ======================================================================
 Sends a burst of SYN packets from a simulated attacker IP to your laptop
 so you can test packet detection, ML classification, and active blocking
@@ -37,11 +37,11 @@ def simulate_nmap_scan(target_ip):
         send(pkt, verbose=0)
         time.sleep(0.02)
 
-    print(f"✅ Attack burst complete! Check your NetSentinel console and React dashboard.")
+    print(f"[SUCCESS] Attack burst complete! Check your CyberSentinel console and React dashboard.")
 
 if __name__ == "__main__":
     my_ip = get_my_ip()
     print("=" * 60)
-    print("  NetSentinel — Demo Attack Simulator")
+    print("  CyberSentinel — Demo Attack Simulator")
     print("=" * 60)
     simulate_nmap_scan(my_ip)

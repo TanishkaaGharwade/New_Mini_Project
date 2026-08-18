@@ -8,7 +8,7 @@ const ATTACK_EXPLANATIONS = {
     severity: "CRITICAL",
     summary: "The attacker sent hundreds of incomplete TCP connection requests without completing the 3-way handshake.",
     mechanism: "Floods the server's SYN queue, causing memory exhaustion and preventing legitimate users from connecting.",
-    recommendation: "Target IP has been automatically blocked in Windows Firewall via NetSentinel active prevention."
+    recommendation: "Target IP has been automatically blocked in Windows Firewall via CyberSentinel active prevention."
   },
   nmap: {
     title: "Nmap Network Reconnaissance / Port Scan",
@@ -58,7 +58,7 @@ export default function GeminiPanel({ threat, onClose }) {
     severity: threat.blocked ? "HIGH" : "MEDIUM",
     summary: `Anomalous pattern detected by Random Forest model from source ${threat.src_ip}.`,
     mechanism: `Calculated feature vector indicated statistical deviation from baseline normal traffic.`,
-    recommendation: threat.blocked ? "Attacker IP blocked in Windows Firewall." : "Monitored by NetSentinel."
+    recommendation: threat.blocked ? "Attacker IP blocked in Windows Firewall." : "Monitored by CyberSentinel."
   }
 
   return (
@@ -152,7 +152,7 @@ export default function GeminiPanel({ threat, onClose }) {
       {/* Footer Info */}
       <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 11 }}>
         <ShieldAlert size={14} color="#7c3aed" />
-        <span>Powered by Gemini 1.5 Flash + NetSentinel ML Engine</span>
+        <span>Powered by Gemini 1.5 Flash + CyberSentinel ML Engine</span>
       </div>
     </div>
   )

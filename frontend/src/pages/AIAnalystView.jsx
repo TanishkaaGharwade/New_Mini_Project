@@ -6,7 +6,7 @@ export default function AIAnalystView({ threats = [] }) {
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: "Hello! I am your NetSentinel Gemini AI Security Analyst. I monitor your live packet capture stream in real time. Ask me anything about detected attack vectors, firewall rules, or NSL-KDD feature anomalies.",
+      text: "Hello! I am your CyberSentinel Gemini AI Security Analyst. I monitor your live packet capture stream in real time. Ask me anything about detected attack vectors, firewall rules, or NSL-KDD feature anomalies.",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ])
@@ -32,15 +32,15 @@ export default function AIAnalystView({ threats = [] }) {
       let reply = ""
 
       if (prompt.includes('status') || prompt.includes('how many') || prompt.includes('summary')) {
-        reply = `Currently, NetSentinel has logged ${threats.length} total flow events, including ${attackCount} detected threat(s). Most frequent vectors are stealth port sweeps and TCP SYN floods. Active Windows Firewall rules are enforcing isolation.`
+        reply = `Currently, CyberSentinel has logged ${threats.length} total flow events, including ${attackCount} detected threat(s). Most frequent vectors are stealth port sweeps and TCP SYN floods. Active Windows Firewall rules are enforcing isolation.`
       } else if (prompt.includes('portsweep') || prompt.includes('nmap') || prompt.includes('scan')) {
-        reply = `Port sweeps (e.g. Nmap -sS) send TCP SYN packets across multiple ports without completing the 3-way handshake. NetSentinel detects these by observing elevated serror_rate and diff_srv_rate in the 21-feature NSL-KDD vector.`
+        reply = `Port sweeps (e.g. Nmap -sS) send TCP SYN packets across multiple ports without completing the 3-way handshake. CyberSentinel detects these by observing elevated serror_rate and diff_srv_rate in the 21-feature NSL-KDD vector.`
       } else if (prompt.includes('block') || prompt.includes('firewall') || prompt.includes('netsh')) {
         reply = `Active prevention executes 'netsh advfirewall firewall add rule dir=in action=block' for attacker source IPs when flow threshold is reached. Loopback and trusted subnets are automatically whitelisted.`
       } else if (prompt.includes('model') || prompt.includes('accuracy') || prompt.includes('rf')) {
         reply = `The classification engine utilizes a Random Forest model trained on the NSL-KDD dataset with 20 distinct attack label outputs. Flows are evaluated using majority-vote aggregation over 3-second windows.`
       } else {
-        reply = `Analyzed your query regarding "${userMsg.text}". Based on current telemetry, the NetSentinel engine is actively processing incoming packets and enforcing active firewall rules for suspicious flows.`
+        reply = `Analyzed your query regarding "${userMsg.text}". Based on current telemetry, the CyberSentinel engine is actively processing incoming packets and enforcing active firewall rules for suspicious flows.`
       }
 
       setMessages(prev => [...prev, {

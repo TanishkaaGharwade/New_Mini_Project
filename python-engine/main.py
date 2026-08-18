@@ -1,5 +1,5 @@
 """
-main.py — NetSentinel Python Engine Entry Point
+main.py — CyberSentinel Python Engine Entry Point
 ===============================================
 Wires together: sniffer → feature_extractor → classifier → blocker → firebase + real-time SSE stream
 
@@ -30,10 +30,10 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler("netsentinel.log", encoding="utf-8"),
+        logging.FileHandler("cybersentinel.log", encoding="utf-8"),
     ]
 )
-logger = logging.getLogger("netsentinel.main")
+logger = logging.getLogger("cybersentinel.main")
 
 # ─── Global counters ──────────────────────────────────────────────────────────
 total_packets = 0
@@ -93,11 +93,11 @@ def processing_loop(classifier: ThreatClassifier, state: dict):
         was_blocked = False
 
         if not is_attack:
-            logger.debug(f"[NORMAL] {src_ip} → {dst_ip} | {protocol} | {pkt_cnt} pkts")
+            logger.debug(f"[NORMAL] {src_ip} -> {dst_ip} | {protocol} | {pkt_cnt} pkts")
         else:
             total_attacks += 1
             logger.info(
-                f"[ATTACK] {src_ip} → {dst_ip} | {clean_label.upper()} "
+                f"[ATTACK] {src_ip} -> {dst_ip} | {clean_label.upper()} "
                 f"| {pkt_cnt} pkts | {protocol}"
             )
 
@@ -151,13 +151,13 @@ def processing_loop(classifier: ThreatClassifier, state: dict):
 
 def _handle_shutdown(sig, frame):
     """Graceful shutdown on Ctrl+C."""
-    print("\n[*] Shutting down NetSentinel...")
+    print("\n[*] Shutting down CyberSentinel...")
     sys.exit(0)
 
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("  NetSentinel — ML-Based Intrusion Prevention System")
+    print("  CyberSentinel — ML-Based Intrusion Prevention System")
     print("=" * 60)
     print("[!] Make sure you are running this as Administrator")
     print()

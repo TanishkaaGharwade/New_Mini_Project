@@ -1,5 +1,5 @@
 """
-blocker.py — Windows Firewall Active Blocking for NetSentinel
+blocker.py — Windows Firewall Active Blocking for CyberSentinel
 =============================================================
 Source: Repo 3 (Chanveasna-ENG/Network-Intrusion-Detection-and-Monitoring-Tool) util.py
         block_ip() function — directly adapted and extended.
@@ -12,7 +12,7 @@ import subprocess
 import logging
 from config import NEVER_BLOCK_IPS
 
-logger = logging.getLogger("netsentinel.blocker")
+logger = logging.getLogger("cybersentinel.blocker")
 
 # In-memory set of IPs already blocked this session (avoids duplicate netsh calls)
 _blocked_ips: set = set()
@@ -36,7 +36,7 @@ def block_ip(src_ip: str) -> bool:
         logger.debug(f"[BLOCK SKIPPED] {src_ip} already blocked")
         return False
 
-    rule_name = f"NetSentinel Block {src_ip}"
+    rule_name = f"CyberSentinel Block {src_ip}"
 
     try:
         result = subprocess.run(
@@ -82,7 +82,7 @@ def unblock_ip(src_ip: str) -> bool:
     Remove the Windows Firewall block rule for src_ip.
     Used by dashboard 'Unblock' button action.
     """
-    rule_name = f"NetSentinel Block {src_ip}"
+    rule_name = f"CyberSentinel Block {src_ip}"
 
     try:
         result = subprocess.run(
@@ -111,14 +111,14 @@ def unblock_ip(src_ip: str) -> bool:
 
 def unblock_all() -> int:
     """
-    Remove ALL NetSentinel firewall rules (cleanup after demo).
+    Remove ALL CyberSentinel firewall rules (cleanup after demo).
     Returns count of rules removed.
     """
     try:
         result = subprocess.run(
             [
                 "powershell", "-Command",
-                "Remove-NetFirewallRule -DisplayName 'NetSentinel Block *'"
+                "Remove-NetFirewallRule -DisplayName 'CyberSentinel Block *'"
             ],
             capture_output=True,
             text=True,
@@ -126,7 +126,7 @@ def unblock_all() -> int:
         )
         count = len(_blocked_ips)
         _blocked_ips.clear()
-        print(f"[UNBLOCK ALL] Cleared {count} NetSentinel firewall rules")
+        print(f"[UNBLOCK ALL] Cleared {count} CyberSentinel firewall rules")
         return count
     except Exception as e:
         logger.error(f"[UNBLOCK ALL ERROR] {e}")

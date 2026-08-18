@@ -1,7 +1,7 @@
 """
-classifier.py — ML Inference for NetSentinel
+classifier.py — ML Inference for CyberSentinel
 ============================================
-Loads the pretrained Random Forest + preprocessor from Repo 1 (21Sandesh/NetSentinel).
+Loads the pretrained Random Forest + preprocessor from Repo 1 (21Sandesh/CyberSentinel).
 
 Key finding from diagnostic test:
   - Model labels end with a dot: "neptune.", "normal.", "nmap." etc.

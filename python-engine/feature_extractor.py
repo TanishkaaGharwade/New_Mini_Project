@@ -1,8 +1,8 @@
 """
-feature_extractor.py — NetSentinel Feature Extraction Pipeline
+feature_extractor.py — CyberSentinel Feature Extraction Pipeline
 ==============================================================
 Layer 1: parse_packet()        — adapted from Repo 2 (Vanshika110/network-monitor-dashboard) parser.py
-Layer 2: build_feature_vector() — adapted from Repo 1 (21Sandesh/NetSentinel) util.py
+Layer 2: build_feature_vector() — adapted from Repo 1 (21Sandesh/CyberSentinel) util.py
 
 Key fix over original repo:
   - Filters on dst IP (incoming attacks) instead of src IP (outgoing traffic)
