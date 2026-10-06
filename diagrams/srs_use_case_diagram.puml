@@ -1,0 +1,116 @@
+@startuml CyberSentinel_UseCase_SRS
+' ============================================================================
+'  CyberSentinel - System Use Case Diagram (SRS v1.0, Appendix B)
+'  Traceability: every use case is tagged with the SRS requirement IDs it
+'  realises.  <<code-only>> = implemented but not specified in the SRS.
+' ============================================================================
+!pragma layout smetana
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #4A5568
+skinparam usecase {
+  BackgroundColor #EEF6FF
+  BorderColor #2B6CB0
+  BackgroundColor<<code-only>> #FFF8E1
+  BorderColor<<code-only>> #B7791F
+}
+skinparam rectangle {
+  BorderColor #1A365D
+  FontStyle bold
+}
+skinparam actor {
+  BorderColor #1A202C
+  BackgroundColor #FFFFFF
+}
+
+title CyberSentinel - Use Case Diagram (SRS v1.0 traceable)
+
+' ─── Actors ──────────────────────────────────────────────────────────────────
+actor "Admin" as Admin
+actor "Attacker" as Attacker
+
+actor "Firewall" as Firewall <<system>>
+
+rectangle "CyberSentinel IPS" {
+
+  package "Engine Administration" {
+    usecase "Start Detection Engine\n(as Administrator)" as UC_Start
+    usecase "Load Pre-trained ML Model\n& Preprocessor\n[REQ-F3-01]" as UC_Load
+    usecase "Start Local Streaming\n& API Server (:5000)\n[REQ-F5-01]" as UC_Server
+    usecase "Stop Engine\n(Ctrl+C)" as UC_Stop <<code-only>>
+    usecase "Run Demo Attack\nSimulation\n[SRS §6]" as UC_Sim
+  }
+
+  package "Automated Detection & Prevention" {
+    usecase "Intercept & Filter\nInbound Traffic\n[REQ-F1-01, F1-02]" as UC_Capture
+    usecase "Aggregate Traffic into Flows\n(30 pkts OR 3 s per src IP)\n[REQ-F1-03, F2-01..F2-03]" as UC_Flow
+    usecase "Extract 21 NSL-KDD\nFeatures\n[REQ-F2-04]" as UC_Extract
+    usecase "Classify Flow\n(Random Forest + vote)\n[REQ-F3-02..F3-05]" as UC_Classify
+    usecase "Block Attacker IP\n[REQ-F4-01, F4-02]" as UC_Block
+    usecase "Enforce Safeguards\n(whitelist, cloud prefixes,\nduplicate check)\n[REQ-F4-03..F4-05]" as UC_Guard
+    usecase "Broadcast Threat Event\n& Live Stats\n[REQ-F5-02..F5-05]" as UC_Broadcast
+  }
+
+  package "Command-Center Dashboard" {
+    usecase "Monitor Live Dashboard\n(KPI cards, protocol chart)\n[REQ-F7-01, §3.1]" as UC_Monitor
+    usecase "Receive Real-Time\nEvent Stream (SSE)\n[§3.4]" as UC_Stream
+    usecase "View Threat Log\n[REQ-F7-02]" as UC_Log
+    usecase "Filter Threats by\nIP / Attack Type" as UC_Filter <<code-only>>
+    usecase "View Network\nTopology Graph\n[REQ-F7-04, F7-05]" as UC_Topo
+    usecase "View AI Threat\nExplanation\n[REQ-F8-01, F8-02]" as UC_Explain
+    usecase "Generate Fallback\nExplanation\n[REQ-F8-03]" as UC_Fallback
+    usecase "Unblock IP\n(Manual Override)\n[REQ-F7-03, F4-06]" as UC_Unblock
+    usecase "Chat with\nAI Analyst" as UC_Chat <<code-only>>
+    usecase "View Engine &\nFirewall Settings" as UC_Settings <<code-only>>
+  }
+}
+
+' ─── Administrator associations ──────────────────────────────────────────────
+Admin --> UC_Start
+Admin --> UC_Stop
+Admin --> UC_Sim
+Admin --> UC_Monitor
+Admin --> UC_Log
+Admin --> UC_Topo
+Admin --> UC_Explain
+Admin --> UC_Unblock
+Admin --> UC_Chat
+Admin --> UC_Settings
+
+' ─── Engine administration relationships ─────────────────────────────────────
+UC_Start ..> UC_Load   : <<include>>
+UC_Start ..> UC_Server : <<include>>
+UC_Start ..> UC_Capture : <<include>>
+' Note: "Run Demo Attack Simulation" (simulate_attack.py) emits 40 spoofed TCP SYN
+' packets that enter the system through "Intercept & Filter Inbound Traffic".
+
+' ─── Automated pipeline (initiated by inbound traffic) ───────────────────────
+UC_Capture <-- Attacker
+UC_Capture ..> UC_Flow : <<include>>
+UC_Flow ..> UC_Classify : <<include>>
+UC_Classify ..> UC_Extract : <<include>>
+UC_Classify ..> UC_Broadcast : <<include>>
+UC_Block .up.> UC_Classify : <<extend>>\n[attack AND\nflow >= 5 pkts]
+UC_Block ..> UC_Guard : <<include>>
+
+' ─── Dashboard relationships ─────────────────────────────────────────────────
+UC_Monitor ..> UC_Stream : <<include>>
+UC_Log ..> UC_Stream : <<include>>
+UC_Topo ..> UC_Stream : <<include>>
+UC_Filter .up.> UC_Log : <<extend>>
+UC_Fallback .up.> UC_Explain : <<extend>>\n[label not in\nknowledge base]
+
+' ─── Secondary (supporting) system actors ────────────────────────────────────
+UC_Block -- Firewall
+UC_Unblock -- Firewall
+
+legend bottom right
+  |= Style |= Meaning |
+  | <back:#EEF6FF>   blue   </back> | Specified in SRS and implemented |
+  | <back:#FFF8E1>   amber  </back> | <<code-only>>: implemented, not in SRS |
+endlegend
+
+@enduml

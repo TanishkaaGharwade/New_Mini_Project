@@ -1,0 +1,235 @@
+@startuml CyberSentinel_Sequence_SRS
+' ============================================================================
+'  CyberSentinel - End-to-End System Sequence Diagram (SRS v1.0, Appendix B)
+'  Each phase is annotated with the SRS requirement IDs it realises.
+'  Message names match the real functions in python-engine/ and frontend/src/.
+' ============================================================================
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam maxMessageSize 230
+skinparam sequence {
+  LifeLineBorderColor #718096
+  ParticipantBackgroundColor #EEF6FF
+  ParticipantBorderColor #2B6CB0
+  ActorBorderColor #1A202C
+  GroupBorderColor #4A5568
+  GroupBackgroundColor #F7FAFC
+  DividerBackgroundColor #E2E8F0
+  DividerBorderColor #A0AEC0
+}
+autonumber "<b>[00]"
+
+title CyberSentinel - End-to-End System Sequence Diagram (SRS v1.0)
+
+actor "Admin" as Admin
+
+box "Presentation Layer (React 19 + Vite, :5173)" #F0F7FF
+  participant "Dashboard UI\n(DashboardPage,\nThreatTable, GeminiPanel)" as UI
+  participant "useLiveEngine\nhook" as HOOK
+end box
+
+box "Python Processing Engine (run as Administrator)" #F5FFF5
+  participant "SSE / API Server\n(server.py :5000)" as SRV
+  participant "Engine Core\n(main.py /\nProcessingWorker)" as ENG
+  participant "Threat\nClassifier\n(classifier.py)" as CLF
+  participant "Feature\nExtractor" as FE
+  participant "Blocker\n(blocker.py)" as BLK
+  queue "packet_queue\n(max 2000)" as Q
+  participant "Sniffer +\nStale-Flow Flusher\n(sniffer.py)" as SNF
+end box
+
+participant "Firewall" as FW #FFF5F5
+actor "Attacker" as ATK
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 1 - System Startup  [REQ-F3-01, REQ-F5-01, REQ-F1-01] ==
+Admin -> ENG : python main.py (elevated shell)
+activate ENG
+ENG -> SRV : start_sse_server(port=5000)
+activate SRV
+SRV --> ENG : listening (SSEServerThread, daemon)
+ENG -> CLF : ThreatClassifier()
+activate CLF
+CLF -> CLF : joblib.load(preprocessor.pkl, model.pkl)
+alt model or preprocessor file missing
+  CLF --> ENG : FileNotFoundError
+  ENG --> Admin : print error, sys.exit(1)
+else model loaded
+  CLF --> ENG : classifier ready (20 known classes)
+  deactivate CLF
+  ENG -> FE : init_state_dicts()
+  FE --> ENG : connection-state dictionaries
+  ENG -> ENG : start ProcessingWorker thread (daemon)
+  ENG -> SNF : start_capture()   // blocks main thread
+  activate SNF
+  SNF -> SNF : start _flush_stale_flows() thread
+  SNF -> SNF : sniff(filter="ip", store=False)
+  alt Npcap/WinPcap driver missing
+    SNF -> SNF : sniff(L3socket=L3RawSocket)  // Layer-3 fallback
+  else no administrator rights
+    SNF --> Admin : "run as Administrator", abort
+  end
+end
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 2 - Dashboard Connects  [REQ-F5-01, REQ-F5-04, REQ-F5-05, §3.4] ==
+Admin -> UI : open http://localhost:5173
+activate UI
+UI -> HOOK : useLiveEngine()
+activate HOOK
+HOOK -> SRV : GET /events (EventSource)
+SRV -> SRV : register client_queue (max 100)
+SRV --> HOOK : 200 text/event-stream + CORS headers
+SRV --> HOOK : data: {type: "INIT", status: "CONNECTED"}
+HOOK --> UI : isConnected = true
+UI --> Admin : badge "LIVE MONITORING ACTIVE"
+loop every 15 s with no queued events
+  SRV --> HOOK : data: {type: "PING"}  (heartbeat)
+end
+note over UI, HOOK
+  On stream error: isConnected = false,
+  badge -> "WAITING FOR ENGINE",
+  EventSource closed and retried after 3 s.
+end note
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 3 - Traffic Interception & Flow Aggregation  [REQ-F1-01..F1-03, REQ-F2-01..F2-03] ==
+ATK -> SNF : inbound IP packets (e.g. TCP SYN port scan)
+loop for every captured packet
+  alt no IP layer OR dst_ip not MY_IP / 127.0.0.1
+    SNF -> SNF : discard packet  [REQ-F1-02]
+  else inbound packet for this host
+    SNF -> FE : parse_packet(pkt)
+    FE --> SNF : {src_ip, dst_ip, protocol, ports, flags, length}
+    SNF -> SNF : _flow_buffer[src_ip].append(parsed)  [REQ-F2-01]
+    opt count >= 30 packets  OR  elapsed >= 3 s  [REQ-F2-02, F2-03]
+      SNF -> Q : put({src_ip, packets, count})  [REQ-F1-03]
+    end
+  end
+end
+group Stale-flow flusher (every 3 s)  [REQ-F2-03]
+  SNF -> SNF : find flows with age >= 3 s
+  SNF -> Q : put(stale flow) if queue not full
+end
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 4 - Feature Extraction & ML Classification  [REQ-F2-04, REQ-F3-02..F3-05] ==
+ENG -> Q : get(timeout=1)
+Q --> ENG : aggregated flow
+ENG -> ENG : total_packets += count
+loop for each parsed packet in flow
+  ENG -> FE : build_feature_vector(parsed, state)
+  FE --> ENG : 21-feature NSL-KDD vector (or None)
+end
+opt no valid feature vectors
+  ENG -> Q : task_done(); skip flow
+end
+ENG -> CLF : predict_flow(feature_vectors)
+activate CLF
+loop for each vector
+  CLF -> CLF : preprocessor.transform() -> model.predict()
+end
+CLF -> CLF : vote: most common attack label\n(if any vector is an attack)
+CLF --> ENG : (attack_label, is_attack)
+deactivate CLF
+note right of ENG
+  [REQ-F3-05] any inference exception is logged
+  as [ML ERROR]; the flow is skipped and the
+  worker keeps running.
+end note
+
+alt is_attack == false
+  ENG -> ENG : log [NORMAL] flow
+else attack detected
+  ENG -> ENG : total_attacks += 1; log [ATTACK]
+end
+
+  ' ──────────────────────────────────────────────────────────────────────────
+== Phase 5 - Automated Prevention  [REQ-F4-01..F4-05, Business Rules §5.5] ==
+opt is_attack == true
+  alt flow packet count >= 5  [REQ-F4-02]
+    ENG -> BLK : block_ip(src_ip)
+    activate BLK
+    alt src_ip in NEVER_BLOCK_IPS / cloud prefixes  [REQ-F4-03, F4-04]
+      BLK --> ENG : False (safeguard - block skipped)
+    else src_ip already in _blocked_ips  [REQ-F4-05]
+      BLK --> ENG : False (duplicate - skipped)
+    else eligible for blocking
+      BLK -> FW : netsh advfirewall firewall add rule\nname="CyberSentinel Block <ip>"\ndir=in action=block remoteip=<ip>
+      FW --> BLK : return code
+      alt returncode == 0
+        BLK -> BLK : _blocked_ips.add(src_ip)
+        BLK --> ENG : True
+      else failure / no admin rights / timeout (5 s)
+        BLK --> ENG : False (warning logged)  [§5.3]
+      end
+    end
+    deactivate BLK
+  else fewer than 5 packets
+    ENG -> ENG : log [NOISE SKIPPED]
+  end
+end
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 6 - Real-Time Broadcast to Dashboard  [REQ-F5-02, F5-03, REQ-F7-01..F7-05] ==
+ENG -> BLK : get_blocked_ips()
+BLK --> ENG : set of blocked IPs
+ENG -> ENG : build event_doc + stats_doc\n{totalPackets, totalAttacks, blockedIPs, threatLevel %}
+ENG -> SRV : broadcast_event("THREAT_EVENT", {threat, stats})
+SRV -> SRV : put_nowait() into each client_queue\n(drop full / stale clients)  [§5.4]
+SRV --> HOOK : data: {type: "THREAT_EVENT", data}
+HOOK -> HOOK : setStats(stats);\nprepend threat (dedupe by id, keep 100)
+HOOK --> UI : re-render
+UI -> UI : update StatCards & ProtocolChart [F7-01],\nadd ThreatTable row [F7-02],\nadd Topology node + red dashed edge [F7-04, F7-05]
+UI --> Admin : live alert in Navbar, tables & graph
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 7 - AI Threat Explanation  [REQ-F8-01..F8-03] ==
+Admin -> UI : click "Explain" on threat row
+UI -> UI : setSelectedThreat(threat); slide in GeminiPanel  [F8-01]
+UI -> UI : lookup ATTACK_EXPLANATIONS[label]  [F8-02]
+alt label not in static knowledge base
+  UI -> UI : build fallback\n(severity HIGH if blocked else MEDIUM)  [F8-03]
+end
+UI --> Admin : Severity, Summary, Technical Mechanism,\nAutomated Action Taken
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 8 - Manual Override: Unblock IP  [REQ-F7-03, REQ-F4-06, §3.4 API] ==
+Admin -> UI : click "Unblock" on a BLOCKED row
+UI -> HOOK : handleUnblock(ip)
+HOOK -> SRV : POST /unblock {ip}
+SRV -> BLK : unblock_ip(ip)
+activate BLK
+BLK -> FW : netsh advfirewall firewall delete rule\nname="CyberSentinel Block <ip>"
+FW --> BLK : return code
+alt returncode == 0
+  BLK -> BLK : _blocked_ips.discard(ip)
+  BLK --> SRV : True
+  SRV --> HOOK : 200 {success: true, ip, message}
+  HOOK -> HOOK : mark rows with src_ip == ip as blocked = false
+else rule not found / failure
+  BLK --> SRV : False
+  SRV --> HOOK : 200 {success: false, message}
+end
+deactivate BLK
+HOOK --> UI : re-render
+UI --> Admin : row status BLOCKED -> ALLOWED
+
+' ════════════════════════════════════════════════════════════════════════════
+== Phase 9 - Shutdown ==
+Admin -> ENG : Ctrl+C (SIGINT)
+ENG -> ENG : _handle_shutdown() -> sys.exit(0)
+note over SRV, SNF : daemon threads (server, worker, flusher) terminate with main process
+SRV --> HOOK : stream closed
+deactivate SNF
+deactivate SRV
+deactivate ENG
+HOOK --> UI : isConnected = false
+UI --> Admin : badge "WAITING FOR ENGINE"
+deactivate HOOK
+deactivate UI
+
+@enduml
