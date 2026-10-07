@@ -36,8 +36,14 @@ FEATURE_COLUMNS = [
 
 class ThreatClassifier:
     """
-    Wraps the pretrained Random Forest model + preprocessor pipeline.
-    Thread-safe for concurrent calls (model.predict is read-only).
+    ThreatClassifier handles all Machine Learning inference operations.
+    
+    It wraps a scikit-learn Random Forest model and its corresponding StandardScaler
+    preprocessor pipeline. It accepts 21-dimensional network flow vectors, standardizes
+    them, and returns the predicted attack class (e.g., 'neptune', 'normal', 'nmap').
+    
+    Thread-safety: model.predict() is a read-only operation, making this safe
+    to share across multiple worker threads if needed.
     """
 
     def __init__(self):
