@@ -2,6 +2,13 @@ import { useState } from 'react'
 import { Search, ShieldCheck, ShieldX, Unlock } from 'lucide-react'
 import { ATTACK_BADGE_COLORS } from '../data/dummyThreats'
 
+/**
+ * Visual badge indicating the classification label of a packet.
+ * Dynamically assigns colors based on the attack type (e.g., normal, neptune, nmap).
+ * 
+ * @param {Object} props
+ * @param {string} props.label - The ML classification label (e.g., "neptune.", "normal.")
+ */
 function AttackBadge({ label }) {
   const key = label?.toLowerCase().replace(/\.$/, '') // strip trailing dot
   const classes = ATTACK_BADGE_COLORS[key] || 'bg-slate-700/40 text-slate-300 border border-slate-600/30'
@@ -25,6 +32,15 @@ function formatTime(iso) {
   } catch { return iso?.slice(11, 19) || '—' }
 }
 
+/**
+ * Renders a real-time table of intercepted network traffic.
+ * Highlights identified threats and provides actionable mitigation controls (Explain, Unblock).
+ *
+ * @param {Object} props
+ * @param {Object[]} props.threats - Array of threat event objects from the SSE stream.
+ * @param {Function} props.onExplain - Callback invoked when the user clicks 'Explain' for a threat.
+ * @param {Function} props.onUnblock - Callback invoked when the user clicks 'Unblock' for an IP.
+ */
 export default function ThreatTable({ threats = [], onExplain, onUnblock }) {
   const [search, setSearch] = useState('')
   const [unblockingIp, setUnblockingIp] = useState(null)
