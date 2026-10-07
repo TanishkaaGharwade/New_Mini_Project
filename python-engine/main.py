@@ -42,8 +42,15 @@ total_attacks = 0
 
 def processing_loop(classifier: ThreatClassifier, state: dict):
     """
-    Consumer thread: reads aggregated flows from packet_queue,
-    extracts features, classifies, blocks, and broadcasts to React UI + Firebase.
+    Main consumer thread for the CyberSentinel engine.
+    
+    This thread continuously monitors the `packet_queue` for aggregated network flows.
+    For each flow, it:
+      1. Extracts a 21-feature vector from the raw packet data.
+      2. Runs inference using the pre-trained ML classifier.
+      3. Mitigates threats by calling the firewall blocker if an attack is detected.
+      4. Broadcasts real-time events to the React Dashboard via Server-Sent Events (SSE).
+      5. Logs persistent threat data to Firebase Firestore.
     """
     global total_packets, total_attacks
 
@@ -150,7 +157,11 @@ def processing_loop(classifier: ThreatClassifier, state: dict):
 
 
 def _handle_shutdown(sig, frame):
-    """Graceful shutdown on Ctrl+C."""
+    """
+    Handles graceful shutdown on SIGINT (Ctrl+C).
+    Ensures that background threads and active network sockets are closed properly
+    before exiting the application.
+    """
     print("\n[*] Shutting down CyberSentinel...")
     sys.exit(0)
 
