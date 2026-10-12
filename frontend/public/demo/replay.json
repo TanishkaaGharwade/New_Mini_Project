@@ -1,0 +1,2008 @@
+{
+  "model_version": "v1",
+  "generated_at": "2026-10-12T19:42:40Z",
+  "events": [
+    {
+      "delay_ms": 1338,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:41Z",
+        "src_ip": "203.0.113.71",
+        "src_port": 57034,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7523,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2303.53
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2291.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2464,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:43Z",
+        "src_ip": "192.0.2.139",
+        "src_port": 63242,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.9027,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 2072,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:45Z",
+        "src_ip": "192.0.2.92",
+        "src_port": 53846,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.8318,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 2327,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:48Z",
+        "src_ip": "192.0.2.221",
+        "src_port": 62978,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2330.81
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2305.4
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1016,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:49Z",
+        "src_ip": "192.0.2.114",
+        "src_port": 54006,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.8792,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 180,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2334.95
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2320.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1724,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:50Z",
+        "src_ip": "192.0.2.61",
+        "src_port": 59264,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4725,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2318.12
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2292.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1040,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:51Z",
+        "src_ip": "203.0.113.222",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2297,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:54Z",
+        "src_ip": "203.0.113.246",
+        "src_port": 59638,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1769,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:56Z",
+        "src_ip": "198.51.100.72",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1924,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:57Z",
+        "src_ip": "203.0.113.194",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1339,
+      "threat": {
+        "timestamp": "2026-10-12T19:42:59Z",
+        "src_ip": "192.0.2.195",
+        "src_port": 52315,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7623,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 350,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2314.28
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2302.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1540,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:00Z",
+        "src_ip": "198.51.100.198",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 729,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:01Z",
+        "src_ip": "192.0.2.41",
+        "src_port": 56962,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7348,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 170,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2324.69
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2310.4
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1439,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:03Z",
+        "src_ip": "198.51.100.240",
+        "src_port": 50076,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1229,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:04Z",
+        "src_ip": "198.51.100.218",
+        "src_port": 55128,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1424,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:05Z",
+        "src_ip": "198.51.100.225",
+        "src_port": 65144,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8020,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2152,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:07Z",
+        "src_ip": "192.0.2.13",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2290,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:10Z",
+        "src_ip": "192.0.2.39",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1969,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:12Z",
+        "src_ip": "192.0.2.229",
+        "src_port": 61555,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4725,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 20,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2332.6
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2307.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1684,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:13Z",
+        "src_ip": "203.0.113.101",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 873,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:14Z",
+        "src_ip": "198.51.100.73",
+        "src_port": 55563,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7382,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2310.07
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2299.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 822,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:15Z",
+        "src_ip": "203.0.113.116",
+        "src_port": 62484,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2173,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:17Z",
+        "src_ip": "192.0.2.253",
+        "src_port": 60675,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5036,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2068,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:19Z",
+        "src_ip": "203.0.113.246",
+        "src_port": 58352,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.7347,
+        "trigger": "both",
+        "action": "blocked",
+        "packet_count": 4,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 602,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:20Z",
+        "src_ip": "198.51.100.2",
+        "src_port": 50980,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.8792,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 190,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2337.16
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2323
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2298,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:22Z",
+        "src_ip": "203.0.113.71",
+        "src_port": 49632,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7492,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 180,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2322.83
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2310.8
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 628,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:23Z",
+        "src_ip": "198.51.100.226",
+        "src_port": 63611,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 60,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2318.72
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2293.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 986,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:24Z",
+        "src_ip": "203.0.113.6",
+        "src_port": 50182,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2339.59
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2314.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1998,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:26Z",
+        "src_ip": "198.51.100.177",
+        "src_port": 61973,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.6152,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 2125,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:28Z",
+        "src_ip": "198.51.100.101",
+        "src_port": 54098,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 2149,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1567,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:29Z",
+        "src_ip": "203.0.113.112",
+        "src_port": 61643,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4725,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2313.78
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2288.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 619,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:30Z",
+        "src_ip": "198.51.100.91",
+        "src_port": 60213,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 50,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2341.39
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2316
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2303,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:32Z",
+        "src_ip": "203.0.113.18",
+        "src_port": 61584,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.7768,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 2150,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:34Z",
+        "src_ip": "198.51.100.167",
+        "src_port": 55990,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 3698,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2134,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:37Z",
+        "src_ip": "192.0.2.87",
+        "src_port": 60400,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1815,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:38Z",
+        "src_ip": "198.51.100.169",
+        "src_port": 65218,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2326,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:41Z",
+        "src_ip": "198.51.100.167",
+        "src_port": 61642,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8970,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 643,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:41Z",
+        "src_ip": "192.0.2.139",
+        "src_port": 58491,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.6852,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1515,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:43Z",
+        "src_ip": "198.51.100.73",
+        "src_port": 59381,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7523,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 320,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2310.79
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2297.8
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 695,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:44Z",
+        "src_ip": "198.51.100.9",
+        "src_port": 64708,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.7292,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 2260,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:46Z",
+        "src_ip": "203.0.113.30",
+        "src_port": 59897,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7492,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 180,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2322.67
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2309.8
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1103,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:47Z",
+        "src_ip": "203.0.113.68",
+        "src_port": 50395,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 6084,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1598,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:49Z",
+        "src_ip": "192.0.2.138",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1665,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:50Z",
+        "src_ip": "198.51.100.2",
+        "src_port": 55318,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.7657,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2325.24
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2312.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2190,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:52Z",
+        "src_ip": "198.51.100.8",
+        "src_port": 54406,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 9452,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 724,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:53Z",
+        "src_ip": "198.51.100.177",
+        "src_port": 61651,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.6625,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1680,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:55Z",
+        "src_ip": "198.51.100.9",
+        "src_port": 60963,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.8643,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1893,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:57Z",
+        "src_ip": "203.0.113.20",
+        "src_port": 63671,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.775,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 60,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2352.02
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2326.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1648,
+      "threat": {
+        "timestamp": "2026-10-12T19:43:58Z",
+        "src_ip": "192.0.2.123",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2139,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:01Z",
+        "src_ip": "198.51.100.8",
+        "src_port": 64112,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5172,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2101,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:03Z",
+        "src_ip": "192.0.2.175",
+        "src_port": 62253,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.6002,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1453,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:04Z",
+        "src_ip": "203.0.113.143",
+        "src_port": 63085,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8033,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2482,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:07Z",
+        "src_ip": "198.51.100.69",
+        "src_port": 49581,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 2538,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2061,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:09Z",
+        "src_ip": "203.0.113.213",
+        "src_port": 55431,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5978,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2043,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:11Z",
+        "src_ip": "198.51.100.225",
+        "src_port": 53648,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8881,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2164,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:13Z",
+        "src_ip": "203.0.113.122",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1490,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:14Z",
+        "src_ip": "203.0.113.137",
+        "src_port": 58890,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.9067,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 250,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2335.38
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2323.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2138,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:16Z",
+        "src_ip": "198.51.100.27",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2253,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:19Z",
+        "src_ip": "198.51.100.89",
+        "src_port": 57345,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 2799,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1787,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:20Z",
+        "src_ip": "203.0.113.139",
+        "src_port": 53875,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1060,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:22Z",
+        "src_ip": "198.51.100.177",
+        "src_port": 60996,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.5592,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 936,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:22Z",
+        "src_ip": "192.0.2.93",
+        "src_port": 51078,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 674,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:23Z",
+        "src_ip": "192.0.2.211",
+        "src_port": 60447,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.8152,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1621,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:25Z",
+        "src_ip": "203.0.113.157",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2239,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:27Z",
+        "src_ip": "198.51.100.69",
+        "src_port": 63238,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 9620,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2321,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:29Z",
+        "src_ip": "198.51.100.5",
+        "src_port": 50381,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4725,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2317.53
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2292
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2227,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:32Z",
+        "src_ip": "198.51.100.21",
+        "src_port": 62992,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2340.99
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2315.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2141,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:34Z",
+        "src_ip": "198.51.100.168",
+        "src_port": 59647,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.89,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 330,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2338
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2324.4
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2046,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:36Z",
+        "src_ip": "203.0.113.254",
+        "src_port": 60403,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4725,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2339.79
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2314.4
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 671,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:36Z",
+        "src_ip": "203.0.113.187",
+        "src_port": 64124,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5398,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1768,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:38Z",
+        "src_ip": "203.0.113.20",
+        "src_port": 58940,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2320.3
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2294.8
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2421,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:41Z",
+        "src_ip": "192.0.2.250",
+        "src_port": 61440,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 4033,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2422,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:43Z",
+        "src_ip": "192.0.2.151",
+        "src_port": 57501,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4825,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 40,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2339.99
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2314.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1654,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:45Z",
+        "src_ip": "192.0.2.195",
+        "src_port": 60599,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.9175,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2335.46
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2323
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1080,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:46Z",
+        "src_ip": "198.51.100.96",
+        "src_port": 63895,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.6552,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1159,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:47Z",
+        "src_ip": "192.0.2.245",
+        "src_port": 51407,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 0.4725,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 50,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2336.59
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2311.2
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1633,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:49Z",
+        "src_ip": "192.0.2.218",
+        "src_port": 8080,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 55137,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.4998,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 8,
+        "evidence": []
+      }
+    },
+    {
+      "delay_ms": 1155,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:50Z",
+        "src_ip": "203.0.113.197",
+        "src_port": 54906,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.9825,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 10,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2331.35
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2319.6
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1816,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:52Z",
+        "src_ip": "192.0.2.150",
+        "src_port": 62789,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 7617,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 916,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:52Z",
+        "src_ip": "192.0.2.210",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1977,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:54Z",
+        "src_ip": "198.51.100.116",
+        "src_port": 58318,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2023,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:56Z",
+        "src_ip": "192.0.2.76",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 2016,
+      "threat": {
+        "timestamp": "2026-10-12T19:44:58Z",
+        "src_ip": "203.0.113.119",
+        "src_port": 50258,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 4293,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ]
+      }
+    },
+    {
+      "delay_ms": 1491,
+      "threat": {
+        "timestamp": "2026-10-12T19:45:00Z",
+        "src_ip": "198.51.100.9",
+        "src_port": 55931,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.591,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 30,
+        "evidence": []
+      }
+    }
+  ]
+}
