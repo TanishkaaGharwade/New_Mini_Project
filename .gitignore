@@ -9,6 +9,8 @@ python-engine/__pycache__/
 python-engine/*.log
 python-engine/*.pyc
 python-engine/serviceAccountKey.json
+__pycache__/
+.pytest_cache/
 
 # IDE & OS
 .vscode/
