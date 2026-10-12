@@ -4,13 +4,15 @@ server.py — Local Real-Time SSE (Server-Sent Events) & API Server
 Provides zero-configuration real-time IPC between Python engine and React UI.
 Uses Python built-in http.server — no extra dependencies required!
 
+Listens on 127.0.0.1 only, so other machines cannot reach it.
+
 Endpoints:
   GET  http://localhost:5000/events  — SSE stream (live packets, stats, threats)
   POST http://localhost:5000/unblock — Remove Windows Firewall rule for IP
   GET  http://localhost:5000/status  — Health check
 """
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 import json
 import threading
 import queue
@@ -144,9 +146,11 @@ def broadcast_event(event_type: str, data: dict):
             _sse_clients.discard(q)
 
 
-def start_sse_server(host="0.0.0.0", port=5000):
-    """Start the SSE HTTP server in a background daemon thread."""
-    server = HTTPServer((host, port), SSEServerHandler)
+def start_sse_server(host="127.0.0.1", port=5000):
+    """Start the SSE HTTP server in a background daemon thread (this machine only)."""
+    # Threaded: each open /events stream would otherwise block /unblock and /status
+    server = ThreadingHTTPServer((host, port), SSEServerHandler)
+    server.daemon_threads = True
     server_thread = threading.Thread(target=server.serve_forever, daemon=True, name="SSEServerThread")
     server_thread.start()
     logger.info(f"[SSE SERVER] Listening on http://{host}:{port}/events")
