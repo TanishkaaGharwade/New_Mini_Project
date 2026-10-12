@@ -1,118 +1,122 @@
 """
 classifier.py — ML Inference for CyberSentinel
 ============================================
-Loads the pretrained Random Forest + preprocessor from Repo 1 (21Sandesh/CyberSentinel).
-
-Key finding from diagnostic test:
-  - Model labels end with a dot: "neptune.", "normal.", "nmap." etc.
-  - Model has 20 attack classes including "nmap." specifically
-  - Works reliably with flow-level feature vectors (20+ packets aggregated)
+Loads the active CICIDS2017 model (models/model_<ACTIVE_MODEL>.pkl), a scikit-learn
+Pipeline of a median imputer and a Random Forest. One closed flow gives one prediction.
 """
 
-import joblib
-import numpy as np
-import pandas as pd
-import warnings
+import json
+import logging
+import math
 import os
 
-from config import MODEL_PATH, PREPROCESSOR_PATH, NORMAL_LABELS
+import joblib
+import pandas as pd
 
-# Suppress sklearn version mismatch warnings (model was trained on 1.4.1)
-warnings.filterwarnings("ignore", category=UserWarning)
+from config import MODEL_PATH, FEATURES_PATH, ACTIVE_MODEL, BENIGN_LABEL
 
-# NSL-KDD column names — must match preprocessor's expected input exactly
-FEATURE_COLUMNS = [
-    'duration', 'protocol_type', 'service', 'flag',
-    'src_bytes', 'dst_bytes',
-    'count', 'srv_count',
-    'serror_rate', 'srv_serror_rate',
-    'rerror_rate', 'srv_rerror_rate',
-    'same_srv_rate', 'diff_srv_rate', 'srv_diff_host_rate',
-    'dst_host_count', 'dst_host_srv_count',
-    'dst_host_same_srv_rate', 'dst_host_diff_srv_rate',
-    'dst_host_same_src_port_rate', 'dst_host_srv_diff_host_rate',
-]
+logger = logging.getLogger("cybersentinel.classifier")
+
+# 99th percentile of each feature over 2.27 million benign CICIDS2017 flows
+# (PART_A_DETECTION_ENGINE.md section 4.3). Used to explain detections.
+BENIGN_P99 = {
+    "Flow Duration":               118_007_000,
+    "Total Fwd Packets":           55,
+    "Total Backward Packets":      68,
+    "Total Length of Fwd Packets": 11_607,
+    "Total Length of Bwd Packets": 90_111,
+    "Fwd Packet Length Max":       4_333,
+    "Fwd Packet Length Mean":      1_375,
+    "Bwd Packet Length Max":       4_290,
+    "Bwd Packet Length Mean":      1_500,
+    "Packet Length Mean":          983,
+    "Packet Length Std":           1_228,
+    "Flow Bytes/s":                16_250_000,
+    "Flow Packets/s":              1_000_000,
+    "Flow IAT Mean":               22_000_000,
+    "Flow IAT Std":                34_300_000,
+    "Flow IAT Max":                78_600_000,
+    "Fwd IAT Mean":                63_000_000,
+    "Bwd IAT Mean":                58_800_000,
+    "Down/Up Ratio":               3,
+}
 
 
 class ThreatClassifier:
     """
-    ThreatClassifier handles all Machine Learning inference operations.
-    
-    It wraps a scikit-learn Random Forest model and its corresponding StandardScaler
-    preprocessor pipeline. It accepts 21-dimensional network flow vectors, standardizes
-    them, and returns the predicted attack class (e.g., 'neptune', 'normal', 'nmap').
-    
-    Thread-safety: model.predict() is a read-only operation, making this safe
-    to share across multiple worker threads if needed.
+    Wraps the trained pipeline. Feature vectors are lists of 19 numbers in
+    features.json order; NaN is allowed (the pipeline's imputer handles it).
     """
 
-    def __init__(self):
-        if not os.path.exists(MODEL_PATH):
-            raise FileNotFoundError(f"Model not found: {MODEL_PATH}")
-        if not os.path.exists(PREPROCESSOR_PATH):
-            raise FileNotFoundError(f"Preprocessor not found: {PREPROCESSOR_PATH}")
+    def __init__(self, model_path: str = MODEL_PATH, features_path: str = FEATURES_PATH):
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model not found: {model_path}")
+        if not os.path.exists(features_path):
+            raise FileNotFoundError(f"Feature list not found: {features_path}")
 
-        self.preprocessor = joblib.load(PREPROCESSOR_PATH)
-        self.model        = joblib.load(MODEL_PATH)
+        with open(features_path, encoding="utf-8") as f:
+            spec = json.load(f)
+        self.features = list(spec["features"])
+        if spec.get("model_version") not in (None, ACTIVE_MODEL):
+            logger.warning(f"[MODEL] features.json is for model {spec['model_version']}, "
+                           f"active model is {ACTIVE_MODEL}")
 
-        print(f"[+] Model loaded: {type(self.model).__name__}")
-        if hasattr(self.model, "classes_"):
-            print(f"[+] Known classes: {list(self.model.classes_)}")
+        self.model = joblib.load(model_path)
+        if list(self.model.feature_names_in_) != self.features:
+            raise ValueError(
+                f"{os.path.basename(model_path)} expects features {list(self.model.feature_names_in_)}, "
+                f"but features.json lists {self.features}"
+            )
+        missing = set(self.features) - set(BENIGN_P99)
+        if missing:
+            raise ValueError(f"No benign reference percentile for: {sorted(missing)}")
 
-    def predict(self, feature_vector: list) -> tuple[str, bool]:
+        # Single-flow predictions are ~7x faster without the thread pool. In memory only;
+        # predictions are identical and the model file is never written.
+        if "forest" in self.model.named_steps:
+            self.model.set_params(forest__n_jobs=1)
+
+        self.classes = [str(c) for c in self.model.classes_]
+        logger.info(f"[MODEL] Loaded {os.path.basename(model_path)}: classes {self.classes}")
+
+    @staticmethod
+    def is_attack(label: str) -> bool:
+        return label != BENIGN_LABEL
+
+    def classify(self, vector: list) -> tuple[str, float]:
+        """One flow's feature vector → (label, confidence)."""
+        return self.classify_many([vector])[0]
+
+    def classify_many(self, vectors: list) -> list:
+        """Several feature vectors in one model call → [(label, confidence), ...]."""
+        if not vectors:
+            return []
+        for v in vectors:
+            if len(v) != len(self.features):
+                raise ValueError(f"Expected {len(self.features)} features, got {len(v)}")
+        rows = pd.DataFrame(vectors, columns=self.features, dtype=float)
+        proba = self.model.predict_proba(rows)
+        best = proba.argmax(axis=1)
+        return [(self.classes[i], float(p[i])) for i, p in zip(best, proba)]
+
+    def evidence(self, vector: list, top: int = 3) -> list:
         """
-        Run ML inference on a 21-dimensional feature vector.
-        
-        Returns:
-            (label: str, is_attack: bool)
-            label    — raw model output e.g. "neptune.", "normal.", "nmap."
-            is_attack— True if label is NOT in NORMAL_LABELS
+        The features furthest above their benign 99th percentile (at most `top`),
+        as [{"feature": name, "value": value}]. Distance is value ÷ percentile.
+        Features at or below their percentile are never listed.
         """
-        if len(feature_vector) != 21:
-            raise ValueError(f"Expected 21 features, got {len(feature_vector)}")
-
-        df = pd.DataFrame([feature_vector], columns=FEATURE_COLUMNS)
-
-        try:
-            X_scaled = self.preprocessor.transform(df)
-        except Exception as e:
-            raise RuntimeError(f"Preprocessor failed: {e}")
-
-        # Suppress feature-name warning from sklearn version mismatch
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            label = str(self.model.predict(X_scaled)[0])
-
-        is_attack = label.strip().lower() not in NORMAL_LABELS
-        return label, is_attack
-
-    def predict_flow(self, feature_vectors: list[list]) -> tuple[str, bool]:
-        """
-        Run inference on multiple feature vectors from the same flow.
-        Returns the most common non-normal prediction (majority vote).
-        If all are normal, returns ("normal.", False).
-        """
-        if not feature_vectors:
-            return "normal.", False
-
-        results = []
-        for vec in feature_vectors:
-            try:
-                label, is_attack = self.predict(vec)
-                results.append((label, is_attack))
-            except Exception:
+        above = []
+        for name, value in zip(self.features, vector):
+            if value is None or math.isnan(value):
                 continue
+            ratio = value / BENIGN_P99[name]
+            if ratio > 1:
+                above.append((ratio, name, value))
+        above.sort(reverse=True)
+        return [{"feature": name, "value": _tidy(value)} for _, name, value in above[:top]]
 
-        if not results:
-            return "normal.", False
 
-        # Majority vote — if ANY packet in the flow is an attack, flag it
-        attack_results = [(lbl, atk) for lbl, atk in results if atk]
-        if attack_results:
-            # Return most common attack label
-            from collections import Counter
-            labels = [lbl for lbl, _ in attack_results]
-            most_common = Counter(labels).most_common(1)[0][0]
-            return most_common, True
-
-        return "normal.", False
+def _tidy(value: float):
+    """Rounded to 2 decimals, and whole numbers as int, for readable JSON."""
+    value = round(float(value), 2)
+    return int(value) if value.is_integer() else value
