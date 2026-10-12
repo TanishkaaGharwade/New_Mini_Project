@@ -1,324 +1,312 @@
 """
 feature_extractor.py — CyberSentinel Feature Extraction Pipeline
 ==============================================================
-Layer 1: parse_packet()        — adapted from Repo 2 (Vanshika110/network-monitor-dashboard) parser.py
-Layer 2: build_feature_vector() — adapted from Repo 1 (21Sandesh/CyberSentinel) util.py
+Layer 1: parse_packet()    — one Scapy packet → PacketInfo (headers, payload length, flags)
+Layer 2: FlowTracker       — groups packets into bi-directional flows and closes them
+Layer 3: build_features()  — one closed flow → the 19 CICIDS2017 features
 
-Key fix over original repo:
-  - Filters on dst IP (incoming attacks) instead of src IP (outgoing traffic)
-  - Uses Scapy layer accessors instead of PyShark (no Wireshark dependency)
-  - Adds flow-level aggregation window before ML inference
+The features are computed the way the CICIDS2017 dataset computed them
+(see PART_A_DETECTION_ENGINE.md section 4):
+  - lengths are TCP/UDP payload bytes, never whole packet sizes
+  - times are whole microseconds
+  - "Packet Length Mean/Std" count the first packet's length twice; Std divides by n - 1
+  - the two rate features are NaN when the flow lasts zero microseconds
+  - "Down/Up Ratio" is backward packets // forward packets
 """
 
-from scapy.all import IP, TCP, UDP, ICMP
-from collections import defaultdict
-from datetime import datetime
-import time
+import json
+import math
+import threading
+from collections import OrderedDict
+from dataclasses import dataclass
+
+from scapy.layers.inet import IP, TCP, UDP, ICMP
+
+from config import (
+    FEATURES_PATH, FLOW_IDLE_TIMEOUT, FLOW_MAX_DURATION, MAX_OPEN_FLOWS,
+)
+
+with open(FEATURES_PATH, encoding="utf-8") as _f:
+    FEATURE_NAMES: list = json.load(_f)["features"]
+
+_US = 1_000_000  # microseconds per second
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# LAYER 1 — Protocol Parser (from Repo 2 parser.py)
+# LAYER 1 — Packet parser
 # ─────────────────────────────────────────────────────────────────────────────
 
-def parse_packet(packet) -> dict | None:
+@dataclass(frozen=True, slots=True)
+class PacketInfo:
+    ts: float              # capture time, seconds since the epoch
+    src_ip: str
+    dst_ip: str
+    src_port: int | None   # None for ICMP
+    dst_port: int | None
+    protocol: str          # "TCP", "UDP" or "ICMP"
+    payload_len: int       # bytes after the IP and TCP/UDP/ICMP headers, padding excluded
+    syn: bool = False
+    ack: bool = False
+    fin: bool = False
+    rst: bool = False
+
+
+def parse_packet(packet) -> PacketInfo | None:
     """
-    Extract IP/TCP/UDP/ICMP header fields from a Scapy packet.
-    Returns None if packet has no IP layer (e.g. ARP, broadcast).
-    
-    Source: Repo 2 (Vanshika110) parser.py — ported and extended.
+    Extract what the flow tracker and rules need from a Scapy packet.
+    Returns None for anything that is not IPv4 TCP, UDP or ICMP.
     """
     if IP not in packet:
         return None
-
     ip = packet[IP]
-    proto    = "OTHER"
-    src_port = None
-    dst_port = None
-    flags    = None
+
+    # The IP total-length field excludes Ethernet padding, so payload sizes do too
+    ip_header = (ip.ihl or 5) * 4
+    ip_total = ip.len if ip.len is not None else len(ip)
+    ts = float(packet.time)
 
     if TCP in packet:
-        proto    = "tcp"
-        src_port = packet[TCP].sport
-        dst_port = packet[TCP].dport
-        flags    = _decode_tcp_flags(packet[TCP].flags)
-    elif UDP in packet:
-        proto    = "udp"
-        src_port = packet[UDP].sport
-        dst_port = packet[UDP].dport
-        flags    = "SF"   # UDP connections treated as completed
-    elif ICMP in packet:
-        proto    = "icmp"
-        flags    = "SF"
-
-    return {
-        "src_ip":    ip.src,
-        "dst_ip":    ip.dst,
-        "protocol":  proto,
-        "src_port":  src_port,
-        "dst_port":  dst_port,
-        "length":    len(packet),
-        "flags":     flags,
-        "timestamp": time.time(),
-        "raw_pkt":   packet,
-    }
-
-
-def _decode_tcp_flags(flag_int) -> str:
-    """Map Scapy TCP flag integer to NSL-KDD flag string."""
-    # Convert to integer if it's a FlagValue object
-    try:
-        flags = int(flag_int)
-    except (TypeError, ValueError):
-        return "OTH"
-
-    SYN = bool(flags & 0x02)
-    ACK = bool(flags & 0x10)
-    FIN = bool(flags & 0x01)
-    RST = bool(flags & 0x04)
-
-    if SYN and ACK:
-        return "SF"   # normal established
-    if SYN and not ACK:
-        return "S0"   # SYN sent, no reply — classic Nmap stealth scan
-    if RST:
-        return "REJ"  # connection rejected
-    if FIN:
-        return "SF"
-    return "OTH"
+        tcp = packet[TCP]
+        flags = int(tcp.flags)
+        tcp_header = (tcp.dataofs or 5) * 4
+        return PacketInfo(
+            ts, ip.src, ip.dst, int(tcp.sport), int(tcp.dport), "TCP",
+            max(0, ip_total - ip_header - tcp_header),
+            syn=bool(flags & 0x02), ack=bool(flags & 0x10),
+            fin=bool(flags & 0x01), rst=bool(flags & 0x04),
+        )
+    if UDP in packet:
+        udp = packet[UDP]
+        return PacketInfo(
+            ts, ip.src, ip.dst, int(udp.sport), int(udp.dport), "UDP",
+            max(0, ip_total - ip_header - 8),
+        )
+    if ICMP in packet:
+        return PacketInfo(
+            ts, ip.src, ip.dst, None, None, "ICMP",
+            max(0, ip_total - ip_header - 8),
+        )
+    return None
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# LAYER 2 — NSL-KDD Feature Builder (from Repo 1 util.py)
+# LAYER 2 — Flow tracker
 # ─────────────────────────────────────────────────────────────────────────────
 
-def init_state_dicts() -> dict:
+def flow_key(pkt: PacketInfo) -> tuple:
+    """Same key for both directions of a connection."""
+    return (frozenset({(pkt.src_ip, pkt.src_port), (pkt.dst_ip, pkt.dst_port)}), pkt.protocol)
+
+
+class Flow:
     """
-    Initialize all connection-tracking state dictionaries.
-    These accumulate statistics across packets to compute NSL-KDD features.
-    Adapted from Repo 1 PacketCapture.py StartCapture().
+    Running statistics for one bi-directional flow. Individual packets are not kept.
+    Forward is the direction of the first packet seen. Times are whole microseconds.
     """
-    return {
-        "count_dict":                  defaultdict(lambda: {"timestamp": 0, "count": 0}),
-        "diff_srv_rates":              defaultdict(lambda: {"total_connections": 0, "unique_services": set()}),
-        "dst_host_count":              defaultdict(int),
-        "rerror_rate_dict":            {"total_connections": 0, "rej_errors": 0},
-        "srv_count":                   defaultdict(int),
-        "srv_host_count":              defaultdict(set),
-        "dst_host_srv_count":          defaultdict(int),
-        "dst_host_src_port_count":     defaultdict(int),
-        "dst_host_srv_diff_host_count":defaultdict(set),
-        "prev_time":                   0,
-    }
 
+    __slots__ = (
+        "key", "protocol", "src_ip", "src_port", "dst_ip", "dst_port",
+        "first_ts", "last_ts", "close_reason",
+        "fwd_count", "bwd_count", "fwd_bytes", "bwd_bytes", "fwd_max", "bwd_max",
+        "len_n", "len_sum", "len_sumsq",
+        "iat_n", "iat_sum", "iat_sumsq", "iat_max",
+        "fwd_last_ts", "fwd_iat_n", "fwd_iat_sum",
+        "bwd_last_ts", "bwd_iat_n", "bwd_iat_sum",
+    )
 
-def build_feature_vector(parsed: dict, state: dict) -> list | None:
-    """
-    Compute all 21 NSL-KDD features from a parsed packet dict + running state.
-    Returns a list of 21 values, or None if packet can't produce valid features.
-    
-    Feature order matches preprocessor.pkl column expectations.
-    Adapted from Repo 1 util.py — ported from PyShark to Scapy.
-    """
-    try:
-        src_ip   = parsed["src_ip"]
-        dst_ip   = parsed["dst_ip"]
-        src_port = parsed["src_port"]
-        dst_port = parsed["dst_port"]
-        protocol = parsed["protocol"]
-        flag     = parsed["flags"] or "OTH"
-        length   = parsed["length"]
-        current_time = parsed["timestamp"]
+    def __init__(self, pkt: PacketInfo):
+        ts = _to_us(pkt.ts)
+        self.key = flow_key(pkt)
+        self.protocol = pkt.protocol
+        self.src_ip, self.src_port = pkt.src_ip, pkt.src_port
+        self.dst_ip, self.dst_port = pkt.dst_ip, pkt.dst_port
+        self.first_ts = self.last_ts = ts
+        self.close_reason = None
 
-        # ── Duration ──────────────────────────────────────────────────────────
-        duration = 0
-        if state["prev_time"] > 0:
-            duration = max(0, int(current_time - state["prev_time"]))
-        state["prev_time"] = current_time
+        self.fwd_count, self.fwd_bytes, self.fwd_max = 1, pkt.payload_len, pkt.payload_len
+        self.bwd_count, self.bwd_bytes, self.bwd_max = 0, 0, 0
 
-        # ── Bytes ─────────────────────────────────────────────────────────────
-        src_bytes = length
-        dst_bytes = length
+        # Dataset quirk: the first packet's length is counted twice in features 10 and 11
+        self.len_n = 2
+        self.len_sum = 2 * pkt.payload_len
+        self.len_sumsq = 2 * pkt.payload_len ** 2
 
-        # ── diff_srv_rate (per source IP) ─────────────────────────────────────
-        state["diff_srv_rates"][src_ip]["total_connections"] += 1
-        if src_port:
-            state["diff_srv_rates"][src_ip]["unique_services"].add(src_port)
+        self.iat_n = self.iat_sum = self.iat_sumsq = self.iat_max = 0
+        self.fwd_last_ts, self.fwd_iat_n, self.fwd_iat_sum = ts, 0, 0
+        self.bwd_last_ts, self.bwd_iat_n, self.bwd_iat_sum = None, 0, 0
 
-        total_conns   = state["diff_srv_rates"][src_ip]["total_connections"]
-        unique_srvs   = len(state["diff_srv_rates"][src_ip]["unique_services"])
-        diff_srv_rate = round(unique_srvs / total_conns, 2) if total_conns else 0
+    @property
+    def packet_count(self) -> int:
+        return self.fwd_count + self.bwd_count
 
-        # ── count (connections to same host in last 2s) ────────────────────────
-        count = _calculate_count(src_ip, state["count_dict"])
+    def is_forward(self, pkt: PacketInfo) -> bool:
+        return pkt.src_ip == self.src_ip and pkt.src_port == self.src_port
 
-        # ── srv_count ─────────────────────────────────────────────────────────
-        if dst_port:
-            state["srv_count"][dst_port] += 1
-        srv_count_val = state["srv_count"].get(dst_port, 0)
+    def add(self, pkt: PacketInfo) -> None:
+        # Never let time run backwards inside a flow
+        ts = max(_to_us(pkt.ts), self.last_ts)
+        size = pkt.payload_len
 
-        # ── error rates ───────────────────────────────────────────────────────
-        serror_rate     = _serror_rate(protocol, flag)
-        srv_serror_rate = _srv_serror_rate(protocol, flag, dst_port, state)
-        rerror_rate     = _rerror_rate(flag, state["rerror_rate_dict"])
-        srv_rerror_rate = rerror_rate  # simplified; same dict
+        gap = ts - self.last_ts
+        self.iat_n += 1
+        self.iat_sum += gap
+        self.iat_sumsq += gap * gap
+        self.iat_max = max(self.iat_max, gap)
+        self.last_ts = ts
 
-        # ── same_srv_rate ──────────────────────────────────────────────────────
-        same_srv_rate = _same_srv_rate(dst_port, state["srv_count"], total_conns)
+        self.len_n += 1
+        self.len_sum += size
+        self.len_sumsq += size * size
 
-        # ── srv_diff_host_rate ─────────────────────────────────────────────────
-        srv_diff_host_rate = _srv_diff_host_rate(
-            src_ip, dst_port, state["srv_host_count"], state["srv_count"]
-        )
-
-        # ── dst_host_count ─────────────────────────────────────────────────────
-        state["dst_host_count"][dst_ip] += 1
-        dst_host_count_val = state["dst_host_count"][dst_ip]
-
-        # ── dst_host_srv_count ─────────────────────────────────────────────────
-        dst_host_srv_count_val = _dst_host_srv_count(
-            dst_ip, dst_port, state["dst_host_srv_count"]
-        )
-
-        # ── dst_host_same_srv_rate ────────────────────────────────────────────
-        dst_host_same_srv_rate = _dst_host_same_srv_rate(
-            dst_ip, dst_port, state["dst_host_srv_count"]
-        )
-
-        # ── dst_host_diff_srv_rate ─────────────────────────────────────────────
-        dst_host_diff_srv_rate = _dst_host_diff_srv_rate(
-            dst_ip, dst_port, state["dst_host_srv_count"], total_conns
-        )
-
-        # ── dst_host_same_src_port_rate ────────────────────────────────────────
-        dst_host_same_src_port_rate = _dst_host_same_src_port_rate(
-            src_ip, src_port, dst_ip, state["dst_host_src_port_count"]
-        )
-
-        # ── dst_host_srv_diff_host_rate ────────────────────────────────────────
-        dst_host_srv_diff_host_rate = _dst_host_srv_diff_host_rate(
-            dst_ip, dst_port, src_ip,
-            state["dst_host_srv_count"], state["dst_host_srv_diff_host_count"]
-        )
-
-        return [
-            duration, protocol, src_port or 0, flag,
-            src_bytes, dst_bytes,
-            count, srv_count_val,
-            serror_rate, srv_serror_rate,
-            rerror_rate, srv_rerror_rate,
-            round(same_srv_rate, 2),
-            round(diff_srv_rate, 2),
-            round(srv_diff_host_rate, 2),
-            dst_host_count_val,
-            dst_host_srv_count_val,
-            round(dst_host_same_srv_rate, 2),
-            round(dst_host_diff_srv_rate, 2),
-            round(dst_host_same_src_port_rate, 2),
-            round(dst_host_srv_diff_host_rate, 2),
-        ]
-
-    except Exception:
-        return None
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Helper functions (ported from Repo 1 util.py)
-# ─────────────────────────────────────────────────────────────────────────────
-
-def _calculate_count(src_ip: str, count_dict: dict) -> int:
-    """Count connections from same src IP in last 2 seconds."""
-    now = time.time()
-    if src_ip in count_dict:
-        if now - count_dict[src_ip]["timestamp"] <= 2:
-            count_dict[src_ip]["count"] += 1
+        if self.is_forward(pkt):
+            self.fwd_count += 1
+            self.fwd_bytes += size
+            self.fwd_max = max(self.fwd_max, size)
+            self.fwd_iat_n += 1
+            self.fwd_iat_sum += ts - self.fwd_last_ts
+            self.fwd_last_ts = ts
         else:
-            count_dict[src_ip] = {"timestamp": now, "count": 1}
-    else:
-        count_dict[src_ip] = {"timestamp": now, "count": 1}
-    return count_dict[src_ip]["count"]
+            self.bwd_count += 1
+            self.bwd_bytes += size
+            self.bwd_max = max(self.bwd_max, size)
+            if self.bwd_last_ts is not None:
+                self.bwd_iat_n += 1
+                self.bwd_iat_sum += ts - self.bwd_last_ts
+            self.bwd_last_ts = ts
 
 
-def _serror_rate(protocol: str, flag: str) -> float:
-    """SYN error rate: 1.0 if SYN without ACK (S0), else 0."""
-    if protocol == "tcp" and flag == "S0":
-        return 1.0
-    return 0.0
+def _to_us(ts: float) -> int:
+    return int(round(ts * _US))
 
 
-def _srv_serror_rate(protocol: str, flag: str, dst_port, state: dict) -> float:
-    """Service-level SYN error rate."""
-    return _serror_rate(protocol, flag)
+class FlowTracker:
+    """
+    Thread-safe table of open flows.
+
+    add_packet() and sweep() return the flows they closed; the caller classifies them.
+    A flow closes when a TCP FIN or RST is seen (that packet is included), when it has
+    been idle for idle_timeout seconds, or when it reaches max_duration seconds. When
+    more than max_flows are open, the least recently active flow is closed early.
+    """
+
+    def __init__(self, idle_timeout: float = FLOW_IDLE_TIMEOUT,
+                 max_duration: float = FLOW_MAX_DURATION,
+                 max_flows: int = MAX_OPEN_FLOWS):
+        self.idle_timeout_us = int(idle_timeout * _US)
+        self.max_duration_us = int(max_duration * _US)
+        self.max_flows = max_flows
+        self._flows: OrderedDict = OrderedDict()   # oldest activity first
+        self._lock = threading.Lock()
+
+    def __len__(self) -> int:
+        with self._lock:
+            return len(self._flows)
+
+    def add_packet(self, pkt: PacketInfo) -> tuple[bool, list]:
+        """
+        Add one packet. Returns (started_new_flow, closed_flows).
+        """
+        key = flow_key(pkt)
+        ts = _to_us(pkt.ts)
+        closed = []
+
+        with self._lock:
+            flow = self._flows.get(key)
+
+            if flow is not None:
+                if ts - flow.last_ts >= self.idle_timeout_us:
+                    closed.append(self._close(key, "idle"))
+                    flow = None
+                elif ts - flow.first_ts >= self.max_duration_us:
+                    closed.append(self._close(key, "max_duration"))
+                    flow = None
+
+            started = flow is None
+            if started:
+                while len(self._flows) >= self.max_flows:
+                    oldest = next(iter(self._flows))
+                    closed.append(self._close(oldest, "evicted"))
+                flow = Flow(pkt)
+                self._flows[key] = flow
+            else:
+                flow.add(pkt)
+                self._flows.move_to_end(key)
+
+            if pkt.protocol == "TCP" and (pkt.fin or pkt.rst):
+                closed.append(self._close(key, "rst" if pkt.rst else "fin"))
+
+        return started, closed
+
+    def sweep(self, now: float) -> list:
+        """Close every flow idle for idle_timeout or older than max_duration at time now."""
+        now_us = _to_us(now)
+        closed = []
+        with self._lock:
+            for key, flow in list(self._flows.items()):
+                if now_us - flow.last_ts >= self.idle_timeout_us:
+                    closed.append(self._close(key, "idle"))
+                elif now_us - flow.first_ts >= self.max_duration_us:
+                    closed.append(self._close(key, "max_duration"))
+        return closed
+
+    def flush(self) -> list:
+        """Close every open flow (used at shutdown and by the replay tool)."""
+        with self._lock:
+            return [self._close(key, "flush") for key in list(self._flows)]
+
+    def _close(self, key, reason: str) -> Flow:
+        flow = self._flows.pop(key)
+        flow.close_reason = reason
+        return flow
 
 
-def _rerror_rate(flag: str, rerror_dict: dict) -> float:
-    """REJ error rate across all connections."""
-    rerror_dict["total_connections"] += 1
-    if flag == "REJ":
-        rerror_dict["rej_errors"] += 1
-    total = rerror_dict["total_connections"]
-    return round(rerror_dict["rej_errors"] / total, 2) if total else 0.0
+# ─────────────────────────────────────────────────────────────────────────────
+# LAYER 3 — Feature builder
+# ─────────────────────────────────────────────────────────────────────────────
 
-
-def _same_srv_rate(dst_port, srv_count: dict, total_conns: int) -> float:
-    """Fraction of connections going to same service (port)."""
-    if not dst_port or total_conns == 0:
+def _sample_std(n: int, total: int, sumsq: int) -> float:
+    """Sample standard deviation (divide by n - 1) from integer running sums."""
+    if n < 2:
         return 0.0
-    return srv_count.get(dst_port, 0) / total_conns
+    var = (n * sumsq - total * total) / (n * (n - 1))
+    return math.sqrt(var) if var > 0 else 0.0
 
 
-def _srv_diff_host_rate(src_ip: str, dst_port, srv_host_count: dict, srv_count: dict) -> float:
-    """Fraction of connections to this service from different hosts."""
-    if not dst_port:
-        return 0.0
-    srv_host_count[dst_port].add(src_ip)
-    total = srv_count.get(dst_port, 1)
-    diff  = total - len(srv_host_count[dst_port])
-    return round(diff / total, 2) if total else 0.0
+def build_features(flow: Flow) -> dict:
+    """All 19 features of a closed flow, by name."""
+    duration = flow.last_ts - flow.first_ts                       # µs
+    total_bytes = flow.fwd_bytes + flow.bwd_bytes
+    seconds = duration / _US
+
+    return {
+        "Flow Duration":               float(duration),
+        "Total Fwd Packets":           float(flow.fwd_count),
+        "Total Backward Packets":      float(flow.bwd_count),
+        "Total Length of Fwd Packets": float(flow.fwd_bytes),
+        "Total Length of Bwd Packets": float(flow.bwd_bytes),
+        "Fwd Packet Length Max":       float(flow.fwd_max),
+        "Fwd Packet Length Mean":      flow.fwd_bytes / flow.fwd_count,
+        "Bwd Packet Length Max":       float(flow.bwd_max),
+        "Bwd Packet Length Mean":      flow.bwd_bytes / flow.bwd_count if flow.bwd_count else 0.0,
+        "Packet Length Mean":          flow.len_sum / flow.len_n,
+        "Packet Length Std":           _sample_std(flow.len_n, flow.len_sum, flow.len_sumsq),
+        "Flow Bytes/s":                total_bytes / seconds if duration > 0 else math.nan,
+        "Flow Packets/s":              flow.packet_count / seconds if duration > 0 else math.nan,
+        "Flow IAT Mean":               flow.iat_sum / flow.iat_n if flow.iat_n else 0.0,
+        "Flow IAT Std":                _sample_std(flow.iat_n, flow.iat_sum, flow.iat_sumsq),
+        "Flow IAT Max":                float(flow.iat_max),
+        "Fwd IAT Mean":                flow.fwd_iat_sum / flow.fwd_iat_n if flow.fwd_iat_n else 0.0,
+        "Bwd IAT Mean":                flow.bwd_iat_sum / flow.bwd_iat_n if flow.bwd_iat_n else 0.0,
+        "Down/Up Ratio":               float(flow.bwd_count // flow.fwd_count),
+    }
 
 
-def _dst_host_srv_count(dst_ip: str, dst_port, dst_host_srv_count: dict) -> int:
-    """Count of connections to same service on destination host."""
-    if not dst_port:
-        return 0
-    key = (dst_ip, dst_port)
-    dst_host_srv_count[key] += 1
-    return dst_host_srv_count[key]
+def feature_vector(flow: Flow, names: list = FEATURE_NAMES) -> list:
+    """The features of a closed flow as a list, in features.json order."""
+    values = build_features(flow)
+    return [values[name] for name in names]
 
 
-def _dst_host_same_srv_rate(dst_ip: str, dst_port, dst_host_srv_count: dict) -> float:
-    if not dst_port:
-        return 0.0
-    key   = (dst_ip, dst_port)
-    total = sum(dst_host_srv_count.values())
-    same  = dst_host_srv_count.get(key, 0)
-    return round(same / total, 2) if total else 0.0
-
-
-def _dst_host_diff_srv_rate(dst_ip: str, dst_port, dst_host_srv_count: dict, total_conns: int) -> float:
-    if not dst_port or total_conns == 0:
-        return 0.0
-    total_srv = sum(dst_host_srv_count.values())
-    same      = dst_host_srv_count.get((dst_ip, dst_port), 0)
-    diff      = total_srv - same
-    return round(diff / total_conns, 2)
-
-
-def _dst_host_same_src_port_rate(src_ip: str, src_port, dst_ip: str, dst_host_src_port_count: dict) -> float:
-    if not src_port:
-        return 0.0
-    key = (dst_ip, src_port)
-    dst_host_src_port_count[key] += 1
-    total = sum(dst_host_src_port_count.values())
-    same  = dst_host_src_port_count[key]
-    return round(same / total, 2) if total else 0.0
-
-
-def _dst_host_srv_diff_host_rate(dst_ip, dst_port, src_ip, dst_host_srv_count, dst_host_srv_diff_host_count) -> float:
-    if not dst_port:
-        return 0.0
-    key = (dst_ip, dst_port)
-    dst_host_srv_count[key] += 1
-    dst_host_srv_diff_host_count[key].add(src_ip)
-    total = dst_host_srv_count[key]
-    diff  = len(dst_host_srv_diff_host_count[key])
-    return round(diff / total, 2) if total else 0.0
+_missing = set(FEATURE_NAMES) - set(build_features(Flow(PacketInfo(0.0, "0.0.0.1", "0.0.0.2", 1, 2, "TCP", 0))))
+if _missing:
+    raise RuntimeError(f"features.json lists features this extractor cannot compute: {sorted(_missing)}")
