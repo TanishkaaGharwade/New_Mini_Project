@@ -1,28 +1,47 @@
 """
 main.py — CyberSentinel Python Engine Entry Point
 ===============================================
-Wires together: sniffer → feature_extractor → classifier → blocker → firebase + real-time SSE stream
+Wires together:
+
+  sniffer (capture thread)
+     │  PacketInfo
+     ▼
+  flow worker ── FlowTracker (bi-directional flows) + RuleEngine (per-source rates)
+     │  closed flows, rule hits                 ▲
+     ▼                                          │ idle flows
+  detection worker ── classifier + DetectionEngine ◄── sweeper (every second)
+     │  threat records
+     ▼
+  sinks.handle_detection()  (print + SSE; Part B adds Firestore)
 
 Run as Administrator:
     python main.py
 
 Optional env vars:
     NET_INTERFACE=Wi-Fi     (default: auto-detect)
-    FIREBASE_CRED=path/to/serviceAccountKey.json
 """
 
-import threading
 import logging
-import signal
+import os
+import queue
 import sys
-from datetime import datetime, timezone
+import threading
+import time
 
-from sniffer import start_capture, packet_queue
-from feature_extractor import build_feature_vector, init_state_dicts
+import blocker
+import netinfo
+import sinks
+import sniffer
 from classifier import ThreatClassifier
-from blocker import block_ip, get_blocked_ips
-from firebase_client import log_threat, update_stats
-from server import start_sse_server, broadcast_event
+from config import (
+    ENGINE_DIR, ACTIVE_MODEL, DETECT_ONLY, BLOCK_CONFIDENCE,
+    FLOW_SWEEP_INTERVAL, STATS_INTERVAL, DETECTION_QUEUE_MAXSIZE, CLASSIFY_BATCH_SIZE,
+    SSE_HOST, SSE_PORT,
+)
+from detector import DetectionEngine, Stats
+from feature_extractor import FlowTracker
+from rules import RuleEngine, RuleHit
+from server import start_sse_server
 
 # ─── Logging ──────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -30,176 +49,155 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler("cybersentinel.log", encoding="utf-8"),
+        logging.FileHandler(os.path.join(ENGINE_DIR, "cybersentinel.log"), encoding="utf-8"),
     ]
 )
 logger = logging.getLogger("cybersentinel.main")
 
-# ─── Global counters ──────────────────────────────────────────────────────────
-total_packets = 0
-total_attacks = 0
+_TICK = object()   # tells the detection worker to flush throttled records and publish stats
+
+# Closed flows (lists), RuleHits and _TICK, in the order they happened
+detection_queue: queue.Queue = queue.Queue(maxsize=DETECTION_QUEUE_MAXSIZE)
+dropped_detections = 0
 
 
-def processing_loop(classifier: ThreatClassifier, state: dict):
-    """
-    Main consumer thread for the CyberSentinel engine.
-    
-    This thread continuously monitors the `packet_queue` for aggregated network flows.
-    For each flow, it:
-      1. Extracts a 21-feature vector from the raw packet data.
-      2. Runs inference using the pre-trained ML classifier.
-      3. Mitigates threats by calling the firewall blocker if an attack is detected.
-      4. Broadcasts real-time events to the React Dashboard via Server-Sent Events (SSE).
-      5. Logs persistent threat data to Firebase Firestore.
-    """
-    global total_packets, total_attacks
+def _enqueue(item) -> None:
+    global dropped_detections
+    try:
+        detection_queue.put_nowait(item)
+    except queue.Full:
+        dropped_detections += 1
 
-    logger.info("[PROCESSING] Worker thread started")
+
+def flow_worker(tracker: FlowTracker, rules: RuleEngine, stats: Stats) -> None:
+    """Feeds every captured packet to the flow tracker and the rules."""
+    logger.info("[FLOW WORKER] started")
+    while True:
+        pkt = sniffer.packet_queue.get()
+        try:
+            stats.packets += 1
+            new_flow, closed = tracker.add_packet(pkt)
+            for hit in rules.observe(pkt, new_flow):
+                _enqueue(hit)
+            if closed:
+                _enqueue(closed)
+        except Exception:
+            logger.exception("[FLOW WORKER] failed on a packet")
+
+
+def sweeper(tracker: FlowTracker, rules: RuleEngine) -> None:
+    """Closes idle flows, forgets quiet sources, and requests a stats tick."""
+    last_tick = 0.0
+    while True:
+        time.sleep(FLOW_SWEEP_INTERVAL)
+        now = time.time()
+        try:
+            closed = tracker.sweep(now)
+            if closed:
+                _enqueue(closed)
+            rules.prune(now)
+        except Exception:
+            logger.exception("[SWEEPER] sweep failed")
+        if now - last_tick >= STATS_INTERVAL:
+            last_tick = now
+            _enqueue(_TICK)
+
+
+def detection_worker(engine: DetectionEngine, tracker: FlowTracker) -> None:
+    """Classifies closed flows in batches and acts on rule hits, in arrival order."""
+    logger.info("[DETECTION WORKER] started")
+    reported_drops = (0, 0)
+    batch: list = []
+
+    def run_batch():
+        if batch:
+            try:
+                engine.handle_flows(batch)
+            except Exception:
+                logger.exception("[DETECTION WORKER] classification failed")
+            batch.clear()
 
     while True:
-        try:
-            # Get next aggregated flow from sniffer
-            flow = packet_queue.get(timeout=1)
-        except Exception:
-            continue  # timeout — keep looping
+        items = [detection_queue.get()]
+        while len(items) < CLASSIFY_BATCH_SIZE:
+            try:
+                items.append(detection_queue.get_nowait())
+            except queue.Empty:
+                break
 
-        src_ip   = flow["src_ip"]
-        packets  = flow["packets"]
-        pkt_cnt  = flow["count"]
+        for item in items:
+            if isinstance(item, list):
+                batch.extend(item)
+                if len(batch) >= CLASSIFY_BATCH_SIZE:
+                    run_batch()
+                continue
 
-        total_packets += pkt_cnt
-
-        # Build feature vector for each packet in the flow
-        feature_vectors = []
-        last_parsed     = None
-
-        for parsed in packets:
-            vec = build_feature_vector(parsed, state)
-            if vec is not None:
-                feature_vectors.append(vec)
-                last_parsed = parsed
-
-        if not feature_vectors or last_parsed is None:
-            packet_queue.task_done()
-            continue
-
-        # Run ML inference — majority vote across all vectors in flow
-        try:
-            attack_label, is_attack = classifier.predict_flow(feature_vectors)
-        except Exception as e:
-            logger.error(f"[ML ERROR] {e}")
-            packet_queue.task_done()
-            continue
-
-        dst_ip   = last_parsed.get("dst_ip", "?")
-        src_port = last_parsed.get("src_port")
-        dst_port = last_parsed.get("dst_port")
-        protocol = last_parsed.get("protocol", "?").upper()
-        clean_label = attack_label.rstrip(".")
-
-        was_blocked = False
-
-        if not is_attack:
-            logger.debug(f"[NORMAL] {src_ip} -> {dst_ip} | {protocol} | {pkt_cnt} pkts")
-        else:
-            total_attacks += 1
-            logger.info(
-                f"[ATTACK] {src_ip} -> {dst_ip} | {clean_label.upper()} "
-                f"| {pkt_cnt} pkts | {protocol}"
-            )
-
-            # ── Block the attacker IP (only if flow packet count >= 5 to avoid background noise) ──
-            if pkt_cnt >= 5:
-                was_blocked = block_ip(src_ip)
-            else:
-                logger.info(f"[NOISE SKIPPED] {src_ip} flagged as {clean_label} but only {pkt_cnt} pkts (ignored)")
-
-            # ── Log to Firebase ───────────────────────────────────────────
-            log_threat(
-                src_ip       = src_ip,
-                dst_ip       = dst_ip,
-                src_port     = src_port,
-                dst_port     = dst_port,
-                protocol     = protocol,
-                attack_label = attack_label,
-                was_blocked  = was_blocked,
-                packet_count = pkt_cnt,
-            )
-
-        # ── Always broadcast event & stats to React Dashboard via SSE ────
-        now_iso = datetime.now(timezone.utc).isoformat()
-
-        event_doc = {
-            "id": f"event-{total_packets}-{src_ip}",
-            "timestamp": now_iso,
-            "src_ip": src_ip,
-            "src_port": str(src_port) if src_port else "N/A",
-            "dst_ip": dst_ip,
-            "dst_port": str(dst_port) if dst_port else "N/A",
-            "protocol": protocol,
-            "attack_type": clean_label,
-            "blocked": was_blocked,
-            "packet_count": pkt_cnt,
-        }
-
-        stats_doc = {
-            "totalPackets": total_packets,
-            "totalAttacks": total_attacks,
-            "blockedIPs": len(get_blocked_ips()),
-            "threatLevel": round((total_attacks / max(total_packets, 1)) * 100, 1),
-            "updatedAt": now_iso,
-        }
-
-        # Broadcast real-time update to any connected React dashboard browser
-        broadcast_event("THREAT_EVENT", {"threat": event_doc, "stats": stats_doc})
-
-        packet_queue.task_done()
+            run_batch()   # keep flows and rule hits in order
+            try:
+                if isinstance(item, RuleHit):
+                    engine.handle_rule_hit(item)
+                elif item is _TICK:
+                    engine.tick()
+                    sinks.publish_stats()
+                    drops = (sniffer.dropped_packets, dropped_detections)
+                    if drops != reported_drops:
+                        logger.warning(f"[ENGINE] falling behind: {drops[0]} packets and "
+                                       f"{drops[1]} detection items dropped so far")
+                        reported_drops = drops
+                    logger.debug(f"[ENGINE] open flows: {len(tracker)}")
+            except Exception:
+                logger.exception("[DETECTION WORKER] failed on an item")
+        run_batch()
 
 
-def _handle_shutdown(sig, frame):
-    """
-    Handles graceful shutdown on SIGINT (Ctrl+C).
-    Ensures that background threads and active network sockets are closed properly
-    before exiting the application.
-    """
-    print("\n[*] Shutting down CyberSentinel...")
-    sys.exit(0)
-
-
-if __name__ == "__main__":
+def main() -> None:
     print("=" * 60)
     print("  CyberSentinel — ML-Based Intrusion Prevention System")
     print("=" * 60)
     print("[!] Make sure you are running this as Administrator")
     print()
 
-    # Register Ctrl+C handler
-    signal.signal(signal.SIGINT, _handle_shutdown)
-
-    # Start Real-Time Server on port 5000 for React UI
-    start_sse_server(port=5000)
-
-    # Load ML model
     try:
-        clf = ThreatClassifier()
-    except FileNotFoundError as e:
-        print(f"[ERROR] {e}")
-        print("  Make sure model.pkl and preprocessor.pkl are in python-engine/models/")
+        classifier = ThreatClassifier()
+    except (FileNotFoundError, ValueError) as e:
+        logger.error(f"[MODEL] {e}")
+        print(f"  Make sure models/model_{ACTIVE_MODEL}.pkl and training/features.json exist")
         sys.exit(1)
 
-    # Initialize connection state tracking
-    state = init_state_dicts()
+    local_ips = netinfo.local_ips()
+    blocker.init_whitelist()
+    blocker.load_existing_rules()
+    mode = "DETECT-ONLY (firewall untouched)" if DETECT_ONLY else f"BLOCKING (model confidence >= {BLOCK_CONFIDENCE})"
+    logger.info(f"[MAIN] Mode: {mode}")
 
-    # Start processing worker thread (daemon — dies when main exits)
-    worker = threading.Thread(
-        target=processing_loop,
-        args=(clf, state),
-        daemon=True,
-        name="ProcessingWorker"
+    stats = Stats(blocked_ips=blocker.get_blocked_ips)
+    sinks.set_stats_provider(stats.snapshot)
+    start_sse_server(host=SSE_HOST, port=SSE_PORT)
+
+    engine = DetectionEngine(
+        classifier, sinks.handle_detection,
+        local_ips=local_ips, stats=stats,
+        detect_only=DETECT_ONLY, block_confidence=BLOCK_CONFIDENCE,
+        is_whitelisted=blocker.is_whitelisted, block_ip=blocker.block_ip,
     )
-    worker.start()
-    logger.info("[MAIN] Processing worker started")
+    tracker = FlowTracker()
+    rules = RuleEngine(local_ips=local_ips)
 
-    # Start Scapy capture — this blocks the main thread
+    for target, args, name in (
+        (flow_worker, (tracker, rules, stats), "FlowWorker"),
+        (sweeper, (tracker, rules), "FlowSweeper"),
+        (detection_worker, (engine, tracker), "DetectionWorker"),
+    ):
+        threading.Thread(target=target, args=args, daemon=True, name=name).start()
+
+    # Scapy capture blocks the main thread until Ctrl+C
     logger.info("[MAIN] Starting packet capture...")
-    start_capture()
+    try:
+        sniffer.start_capture(local_ips)
+    except KeyboardInterrupt:
+        pass
+    print("\n[*] Shutting down CyberSentinel...")
+
+
+if __name__ == "__main__":
+    main()
