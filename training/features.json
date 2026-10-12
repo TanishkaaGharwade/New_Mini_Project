@@ -1,0 +1,40 @@
+{
+  "model_version": "v1",
+  "dataset": "CICIDS2017 (MachineLearningCVE CSVs)",
+  "classes": [
+    "Benign",
+    "Botnet",
+    "BruteForce",
+    "DDoS",
+    "DoS",
+    "PortScan"
+  ],
+  "features": [
+    "Flow Duration",
+    "Total Fwd Packets",
+    "Total Backward Packets",
+    "Total Length of Fwd Packets",
+    "Total Length of Bwd Packets",
+    "Fwd Packet Length Max",
+    "Fwd Packet Length Mean",
+    "Bwd Packet Length Max",
+    "Bwd Packet Length Mean",
+    "Packet Length Mean",
+    "Packet Length Std",
+    "Flow Bytes/s",
+    "Flow Packets/s",
+    "Flow IAT Mean",
+    "Flow IAT Std",
+    "Flow IAT Max",
+    "Fwd IAT Mean",
+    "Bwd IAT Mean",
+    "Down/Up Ratio"
+  ],
+  "units": {
+    "Flow Duration": "microseconds",
+    "IAT features": "microseconds between consecutive packets",
+    "Length features": "TCP/UDP payload bytes, headers not included",
+    "Flow Bytes/s, Flow Packets/s": "per second, over the whole flow"
+  },
+  "note": "Order matters. The engine must build the vector in exactly this order."
+}
