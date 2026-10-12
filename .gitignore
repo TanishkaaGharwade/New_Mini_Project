@@ -15,3 +15,11 @@ python-engine/serviceAccountKey.json
 .idea/
 .DS_Store
 Thumbs.db
+
+# Engine secrets and local training data
+python-engine/.env
+training/data/
+
+
+
+
