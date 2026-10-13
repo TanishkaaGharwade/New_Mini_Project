@@ -52,6 +52,7 @@ MAX_EVENTS_PER_SOURCE = 5_000 # cap on remembered packets per source and rule wi
 
 # ─── Decisions and output ─────────────────────────────────────────────────────
 CORRELATION_WINDOW     = 10.0  # seconds a rule hit or model verdict counts as "recent" for trigger "both"
+MODEL_BLOCK_MIN_FLOWS  = 3     # attack flows from one source within CORRELATION_WINDOW before the model alone may block
 ALERT_THROTTLE_SECONDS = 5.0   # at most one record per (source, label) in this many seconds
 STATS_INTERVAL         = 3.0   # seconds between stats broadcasts
 

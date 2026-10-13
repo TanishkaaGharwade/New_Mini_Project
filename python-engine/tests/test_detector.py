@@ -158,13 +158,14 @@ class Clock:
         return self.now
 
 
-def make_engine(label="Benign", confidence=0.99, detect_only=False, whitelist=(), firewall=None):
+def make_engine(label="Benign", confidence=0.99, detect_only=False, whitelist=(), firewall=None, min_flows=1):
     records = []
     clock = Clock()
     engine = DetectionEngine(
         FakeClassifier(label, confidence), records.append, local_ips={ME},
         detect_only=detect_only, block_confidence=0.90,
         is_whitelisted=lambda ip: ip in whitelist, block_ip=firewall or FakeFirewall(),
+        model_block_min_flows=min_flows,
         throttle=AlertThrottle(window=5), clock=clock,
     )
     return engine, records, clock
@@ -211,6 +212,41 @@ def test_flow_started_by_this_machine_still_blames_the_remote_side():
     r, = records
     assert (r["src_ip"], r["src_port"], r["dst_ip"], r["dst_port"]) == (ATTACKER, 80, ME, 40000)
     assert fw.calls == [ATTACKER]                                    # never this machine
+
+
+def test_model_alone_needs_several_attack_flows_before_blocking():
+    fw = FakeFirewall()
+    engine, records, _ = make_engine("PortScan", 0.99, firewall=fw, min_flows=3)
+    engine.throttle = AlertThrottle(window=0)                        # look at every record
+
+    engine.handle_flows(closed_flow(ATTACKER, ME, t=0.0))            # a single flow: could be a stray probe
+    engine.handle_flows(closed_flow(ATTACKER, ME, t=1.0))
+    assert [r["action"] for r in records] == ["alert_only", "alert_only"] and fw.calls == []
+
+    engine.handle_flows(closed_flow(ATTACKER, ME, t=2.0))            # third within the window
+    assert records[-1]["action"] == "blocked" and fw.calls == [ATTACKER]
+
+
+def test_attack_flows_outside_the_window_do_not_add_up():
+    fw = FakeFirewall()
+    engine, records, _ = make_engine("PortScan", 0.99, firewall=fw, min_flows=3)
+    engine.throttle = AlertThrottle(window=0)
+    for t in (0.0, 30.0, 60.0):                                      # 30 s apart; the window is 10 s
+        engine.handle_flows(closed_flow(ATTACKER, ME, t=t))
+    assert [r["action"] for r in records] == ["alert_only"] * 3 and fw.calls == []
+
+
+def test_flow_count_is_per_source_and_does_not_delay_rules():
+    fw = FakeFirewall()
+    engine, records, _ = make_engine("PortScan", 0.99, firewall=fw, min_flows=3)
+    engine.throttle = AlertThrottle(window=0)
+    engine.handle_flows(closed_flow(ATTACKER, ME, t=0.0))
+    engine.handle_flows(closed_flow("203.0.113.5", ME, t=0.5))
+    engine.handle_flows(closed_flow("203.0.113.6", ME, t=1.0))
+    assert fw.calls == []                                            # three sources, one flow each
+
+    engine.handle_rule_hit(port_scan_hit(t=1.5))                     # a rule blocks at once
+    assert records[-1]["action"] == "blocked" and fw.calls == [ATTACKER]
 
 
 def test_model_only_low_confidence_is_alert_only():

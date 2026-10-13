@@ -19,6 +19,10 @@ A "blocked" decision then goes through the overrides, in order:
   2. DETECT_ONLY         → "detect_only", not blocked
   3. block_ip() fails    → "alert_only"
 
+The model alone blocks a source only after MODEL_BLOCK_MIN_FLOWS of its flows were
+judged attacks within CORRELATION_WINDOW; earlier ones are "alert_only". One flow can
+be a stray connection to a closed port, which the model cannot tell from a scan probe.
+
 A rule hit and a model verdict are combined into trigger "both" when they concern
 the same remote IP within CORRELATION_WINDOW seconds of each other. A "both" record
 carries the model's class as its label and the evidence of both; a "rule" record
@@ -27,10 +31,12 @@ carries the rule's name (SynFlood, PortScan, IcmpFlood) and a null confidence.
 
 import logging
 import time
+from collections import deque
 from datetime import datetime, timezone
 
 from config import (
     BLOCK_CONFIDENCE, DETECT_ONLY, CORRELATION_WINDOW, ALERT_THROTTLE_SECONDS,
+    MODEL_BLOCK_MIN_FLOWS,
 )
 from feature_extractor import feature_vector
 
@@ -169,6 +175,7 @@ class DetectionEngine:
                  detect_only: bool = DETECT_ONLY, block_confidence: float = BLOCK_CONFIDENCE,
                  is_whitelisted=lambda ip: False, block_ip=lambda ip: "failed",
                  correlation_window: float = CORRELATION_WINDOW,
+                 model_block_min_flows: int = MODEL_BLOCK_MIN_FLOWS,
                  throttle: AlertThrottle | None = None, clock=time.time):
         self.classifier = classifier
         self.sink = sink
@@ -179,10 +186,12 @@ class DetectionEngine:
         self.is_whitelisted = is_whitelisted
         self.block_ip = block_ip
         self.correlation_window = correlation_window
+        self.model_block_min_flows = model_block_min_flows
         self.throttle = throttle or AlertThrottle()
         self.clock = clock
         self._recent_rule: dict = {}    # remote ip → latest RuleHit
         self._recent_model: dict = {}   # remote ip → (ts, label, confidence, evidence)
+        self._attack_flows: dict = {}   # remote ip → times of its recent attack verdicts
 
     # ── inputs ────────────────────────────────────────────────────────────────
 
@@ -208,6 +217,13 @@ class DetectionEngine:
             rule_fired = hit is not None and abs(ts - hit.ts) <= self.correlation_window
             trigger, action = decide(rule_fired, True, confidence, self.block_confidence)
             evidence = (hit.evidence if rule_fired else []) + model_evidence
+
+            seen = self._attack_flows.setdefault(src_ip, deque())
+            seen.append(ts)
+            while ts - seen[0] > self.correlation_window:
+                seen.popleft()
+            if trigger == TRIGGER_MODEL and action == BLOCKED and len(seen) < self.model_block_min_flows:
+                action = ALERT_ONLY
 
             emitted += self._emit(ts, src_ip, src_port, dst_ip, dst_port, flow.protocol,
                                   label, confidence, trigger, action, flow.packet_count, evidence)
@@ -242,6 +258,7 @@ class DetectionEngine:
         horizon = now - 2 * self.correlation_window
         self._recent_rule = {ip: h for ip, h in self._recent_rule.items() if h.ts >= horizon}
         self._recent_model = {ip: m for ip, m in self._recent_model.items() if m[0] >= horizon}
+        self._attack_flows = {ip: s for ip, s in self._attack_flows.items() if s[-1] >= horizon}
         return emitted
 
     # ── output ────────────────────────────────────────────────────────────────

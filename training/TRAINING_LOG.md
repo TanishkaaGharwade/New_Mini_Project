@@ -28,6 +28,8 @@ This is the chronological record of every training, retraining and test run for 
 | 8 | 2026-10-12 | Verification on 1,553,034 unseen benign flows | 0.247% false alarms; 0.102% at blocking threshold 0.90 |
 | 9 | 2026-10-12 | Test on excluded attack types | Not detected, as expected (0% to 4.8%) |
 | 10 | 2026-10-12 | Load check in a second environment | Loads correctly |
+| 11 | 2026-10-13 | Synthetic test of the new engine (Part A) | Benign traffic stays benign; attacks are caught by rules only, and the model misses port scans because of a dataset artifact |
+| 12 | 2026-10-13 | Length-convention fix in the engine, plus a blocking safeguard | Model detects 300 of 300 scan probes (was 0); no retraining needed |
 
 ---
 
@@ -475,10 +477,149 @@ False alarms that would also be blocked automatically, by threshold:
 
 ---
 
+## Entry 11 — Synthetic test of the new engine (Part A)
+
+**Date:** 2026-10-13
+**What:** after Part A was pushed (new flow tracker, rules, classifier wiring), hand-built packet sequences were fed through the engine's own `FlowTracker`, `RuleEngine` and `ThreatClassifier`. No real capture and no firewall were involved.
+**Important:** this is synthetic traffic written to imitate each pattern. It is a functional check, not an accuracy measurement.
+
+Engine unit tests: 104 passed (pytest 9.1.1).
+
+| Scenario | Packets | Flows | Model verdicts | Rule hits |
+|---|---|---|---|---|
+| Benign HTTPS, 400 sessions to 8 servers | 20,069 | 400 | 400 Benign | none |
+| Benign DNS, 200 lookups | 400 | 200 | 200 Benign | none |
+| SYN port scan, 40 ports, no replies (the `simulate_attack.py` pattern) | 40 | 40 | 40 Benign | PortScan |
+| nmap-style scan, 300 ports, RST replies | 600 | 300 | 300 Benign | PortScan, SynFlood |
+| SYN flood, 2,000 packets in 1 second | 2,000 | 2,000 | 2,000 Benign | SynFlood |
+| ICMP flood, 1,500 packets | 1,500 | 1 | 1 Benign | IcmpFlood |
+
+Benign share of the first 100 HTTPS flows: 1.00. Of the last 100: 1.00.
+
+**Finding 1: the original bug is fixed.** In entry 1 the old engine drifted from "normal" to "satan" as traffic accumulated. The new engine classified all 600 benign flows as Benign, with no drift between the first and last flows.
+
+**Finding 2: every attack was caught, but only by the rules.** The model called every scan and flood flow Benign.
+
+**Finding 3: the model's PortScan detection depends on a dataset artifact.** The cause was traced in the dataset's 158,930 PortScan rows:
+
+| Flow shape in the dataset (forward packets, backward packets, forward bytes, backward bytes) | Rows |
+|---|---|
+| 1, 1, 0, 6 | 79,488 |
+| 1, 1, 2, 6 | 77,955 |
+| all other shapes | 1,487 |
+
+99% of PortScan rows are one probe and one reply whose reply has a "payload" of 6 bytes. A reset reply carries no payload. The 6 bytes are the padding that fills a short frame up to the minimum Ethernet size, which the dataset's tool counted as payload (suspected in entry 3). Our engine computes true payload, which is 0.
+
+Model output for a one-probe, one-reply flow, varying only the byte counts and duration:
+
+| Forward bytes | Backward bytes | 60 µs | 200 µs | 2,000 µs |
+|---|---|---|---|---|
+| 0 | 0 (true payload, what the engine produces) | Benign 1.00 | Benign 1.00 | Benign 0.99 |
+| 0 | 6 (as in the dataset) | PortScan 1.00 | PortScan 1.00 | Benign 0.56 |
+| 2 | 6 (as in the dataset) | PortScan 0.99 | PortScan 1.00 | Benign 0.52 |
+| 6 | 6 | Benign 0.99 | Benign 1.00 | Benign 1.00 |
+
+**Conclusion**
+
+- The PortScan recall of 0.9989 in entry 6 is real for the dataset but does not carry over: the model learned "reply of exactly 6 bytes", not scanning behaviour. On live traffic `model_v1` should be expected to miss port scans.
+- Port scans are still detected, by the rate rule (more than 20 distinct ports in 5 seconds), which fired in both scan scenarios.
+- SYN and ICMP floods are not in the model's training classes in this form (the dataset's DoS class is HTTP-level floods), so rule-only detection there is expected.
+
+**Open decision:** either accept rule-only detection for scans, or train a `model_v2` with the padding artifact removed from the length features (for example treating lengths of 6 or less as 0) and measure whether PortScan is still learnable from the remaining features.
+
+---
+
+## Entry 12 — Length-convention fix in the engine, plus a blocking safeguard
+
+**Date:** 2026-10-13
+**What:** resolved the open decision of entry 11. The model was **not** retrained. Instead the engine was changed to measure TCP lengths the way the dataset does. `model_v1.pkl` is unchanged (same SHA-256 as entry 7).
+
+### Why not retrain
+
+Entry 11 proposed training a `model_v2` with the artifact removed. That turned out not to be possible: the dataset only gives per-flow totals, and padding is added per packet, so it cannot be subtracted afterwards. The alternative is to make the engine produce the same numbers the model was trained on.
+
+### What the artifact is
+
+An Ethernet frame carries at least 46 bytes. A shorter IP packet is padded up to that, and the dataset's tool counted the padding as TCP payload.
+
+| Packet | IP packet size | Padding counted as "payload" |
+|---|---|---|
+| TCP with no options and no data (bare ACK, RST) | 40 bytes | 6 |
+| SYN with only an MSS option | 44 bytes | 2 |
+| TCP with 8 or more bytes of options, or 6 or more bytes of data | 46 bytes or more | 0 |
+
+Evidence from all 2,830,743 dataset rows, counting flows by their smallest packet length (TCP-port flows only):
+
+| Smallest forward length | Flows | | Smallest backward length | Flows |
+|---|---|---|---|---|
+| 0 | 1,316,972 | | 0 | 1,428,449 |
+| 1 | 214 | | 1 | 95 |
+| 2 | 141,138 | | 2 | 21,924 |
+| 3 | 0 | | 3 | 5 |
+| 4 | 0 | | 4 | 786 |
+| 5 | 1 | | 5 | 2 |
+| 6 | 358,110 | | 6 | 351,123 |
+
+Lengths of exactly 2 and 6 are very common, while 1, 3, 4 and 5 almost never occur. Real payloads would not skip those values; padding to a fixed minimum explains it exactly. This also explains the two PortScan shapes in entry 11: a probe with full options (0) or MSS only (2), answered by a reset (6).
+
+### The change
+
+In `python-engine/feature_extractor.py`, TCP length is now `payload + max(0, 46 − IP packet size)`. It is computed from the IP header, so it gives the same answer whether or not the capture saw the padded frame. UDP and ICMP are unchanged: the effect could not be confirmed for them, because the dataset's UDP payloads are all larger than the minimum.
+
+### Results: same packets, before and after
+
+Real Scapy packets were passed through `parse_packet`, the flow tracker, the rules and the model. Synthetic traffic; no capture, no firewall.
+
+| Scenario | Flows | Model before | Model after | Rules (both) |
+|---|---|---|---|---|
+| Benign HTTPS, 400 sessions | 400 | 400 Benign | 400 Benign | none |
+| Benign DNS, 200 lookups | 200 | 200 Benign | 200 Benign | none |
+| 50 outbound connections refused by a remote server | 50 | 50 Benign | 50 Benign | none |
+| Scan, SYN with MSS only (`nmap -sS` style), 300 ports | 300 | 300 Benign | **300 PortScan**, all at confidence ≥ 0.90 | PortScan, SynFlood |
+| Scan, SYN with full options (`nmap -sT` style), 300 ports | 300 | 300 Benign | **300 PortScan**, all at confidence ≥ 0.90 | PortScan, SynFlood |
+| `simulate_attack.py` pattern (SYN with no options), 40 ports | 40 | 40 Benign | 40 Benign | PortScan |
+| SYN flood, 2,000 packets, no replies | 2,000 | 2,000 Benign | 2,000 Benign | SynFlood |
+| ICMP flood, 1,500 packets | 1 | Benign | Benign | IcmpFlood |
+| One inbound connection attempt to a closed port | 1 | Benign | **PortScan ≥ 0.90** | none |
+
+- The model now recognises both common scan styles: 600 of 600 probes, against 0 of 600 before.
+- Benign results did not change: 650 of 650 benign flows stayed Benign.
+- `simulate_attack.py` sends SYNs with no options at all, a shape that is not in the dataset. The model still calls it Benign; the rule catches it.
+
+### The side effect, and the safeguard
+
+The last row is a new risk created by the fix. To the model, one refused connection looks identical to one scan probe, so a single stray connection to a closed port would have been blocked.
+
+A safeguard was added to `python-engine/detector.py`: **the model alone may block a source only after 3 of its flows are judged attacks within 10 seconds** (`MODEL_BLOCK_MIN_FLOWS` in `config.py`). Earlier ones are recorded as `alert_only`. Rule matches still block immediately.
+
+Full decision engine, blocking enabled, fake firewall:
+
+| Scenario | Records | Blocked? |
+|---|---|---|
+| 1 stray inbound connection to a closed port | 1 PortScan, `alert_only` | No |
+| 2 attempts from the same host, 1 second apart | 2 PortScan, `alert_only` | No |
+| 300-port scan, model only (rules switched off) | 2 `alert_only`, then 298 `blocked` | Yes, from the 3rd probe |
+| 300-port scan, model and rules | 2 `alert_only`, then 300 `blocked` (282 as `both`) | Yes, from the 3rd probe |
+| Slow scan: 12 ports at 2 per second, below the rule's 20-port threshold | 2 `alert_only`, then 10 `blocked` | Yes, from the 3rd probe |
+
+The slow scan is the case where the model adds something the rules cannot: it never reaches the rule threshold, and only the model catches it.
+
+The safeguard also lowers the general false-block risk measured in entry 8 (about 1 benign flow in 1,000 at confidence ≥ 0.90), since a single misjudged flow no longer blocks anyone. That reduction has not been measured.
+
+Engine unit tests after both changes: 113 passed (104 before; 9 added).
+
+### What this does and does not show
+
+- The model's port-scan detection was restored without retraining, by matching the dataset's measurement convention.
+- It still depends on that convention. This is a property of the dataset, and a clear example of a benchmark score (PortScan recall 0.9989) that only holds if the live system copies the benchmark's quirks.
+- All of this is synthetic. Real scans from a second machine are still untested.
+
+---
+
 ## Not yet tested
 
 These are open and will be added as new entries when done:
 
-- **Live traffic.** Every number above comes from the CICIDS2017 files. The model has not yet been run on flows produced by our own feature extractor, which is not built yet.
+- **Live traffic.** Entries 11 and 12 used synthetic packets. The engine has still not been run on real captured traffic with real attacks (Part A's step A15); those results are not in this log yet.
 - **A different laptop.** A teammate pulling the repo and loading the model.
 - **Training on some days and testing on others,** which would be a stricter test of generalisation than a random split.
