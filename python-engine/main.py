@@ -12,7 +12,7 @@ Wires together:
   detection worker ── classifier + DetectionEngine ◄── sweeper (every second)
      │  threat records
      ▼
-  sinks.handle_detection()  (print + SSE; Part B adds Firestore)
+  sinks.handle_detection()  (print + SSE + Firestore + explanation)
 
 Run as Administrator:
     python main.py
@@ -173,6 +173,7 @@ def main() -> None:
     stats = Stats(blocked_ips=blocker.get_blocked_ips)
     sinks.set_stats_provider(stats.snapshot)
     start_sse_server(host=SSE_HOST, port=SSE_PORT)
+    sinks.start_cloud(unblock=blocker.unblock_ip)
 
     engine = DetectionEngine(
         classifier, sinks.handle_detection,
@@ -197,6 +198,7 @@ def main() -> None:
     except KeyboardInterrupt:
         pass
     print("\n[*] Shutting down CyberSentinel...")
+    sinks.stop_cloud()
 
 
 if __name__ == "__main__":
