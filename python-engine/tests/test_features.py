@@ -260,16 +260,33 @@ def _wire(packet, time=T0):
     return captured
 
 
-def test_parse_bare_syn_with_ethernet_padding_has_zero_payload():
+def test_parse_bare_syn_counts_short_frame_padding_like_the_dataset():
     raw = eth() / IP(src="198.51.100.42", dst="192.168.1.4") / TCP(sport=40000, dport=22, flags="S")
-    frame = _wire(raw)
-    frame = Ether(bytes(frame) + b"\x00" * (60 - len(bytes(frame))))   # pad to the Ethernet minimum
-    frame.time = T0
-    assert len(bytes(frame)) == 60
+    unpadded = _wire(raw)                                                      # 54 bytes, as captured when sent
+    padded = Ether(bytes(unpadded) + b"\x00" * (60 - len(bytes(unpadded))))   # 60 bytes, as received
+    padded.time = T0
+    assert (len(bytes(unpadded)), len(bytes(padded))) == (54, 60)
 
-    info = parse_packet(frame)
-    assert info == PacketInfo(T0, "198.51.100.42", "192.168.1.4", 40000, 22, "TCP", 0,
-                              syn=True, ack=False, fin=False, rst=False)
+    # A 40-byte IP packet is 6 bytes short of the Ethernet minimum; the dataset reports 6
+    expected = PacketInfo(T0, "198.51.100.42", "192.168.1.4", 40000, 22, "TCP", 6,
+                          syn=True, ack=False, fin=False, rst=False)
+    assert parse_packet(padded) == expected
+    assert parse_packet(unpadded) == expected      # same answer whether or not the capture saw the padding
+
+
+@pytest.mark.parametrize("options,payload,expected", [
+    ([], b"", 6),                                    # bare ACK or RST: 40-byte IP packet
+    ([("MSS", 1460)], b"", 2),                       # SYN with only an MSS option: 44 bytes
+    ([("MSS", 1460), ("SAckOK", b""), ("Timestamp", (1, 0)), ("NOP", None), ("WScale", 7)], b"", 0),  # 60 bytes
+    ([], b"abc", 6),                                 # 3 data bytes + 3 padding
+    ([], b"x" * 6, 6),                               # exactly at the minimum, no padding
+    ([], b"x" * 100, 100),
+])
+def test_parse_tcp_length_matches_dataset_convention(options, payload, expected):
+    packet = eth() / IP() / TCP(flags="A", options=options)
+    if payload:
+        packet = packet / Raw(payload)
+    assert parse_packet(_wire(packet)).payload_len == expected
 
 
 def test_parse_tcp_payload_excludes_options():

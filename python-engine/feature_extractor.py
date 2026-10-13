@@ -7,7 +7,8 @@ Layer 3: build_features()  — one closed flow → the 19 CICIDS2017 features
 
 The features are computed the way the CICIDS2017 dataset computed them
 (see PART_A_DETECTION_ENGINE.md section 4):
-  - lengths are TCP/UDP payload bytes, never whole packet sizes
+  - lengths are TCP/UDP payload bytes, never whole packet sizes; for TCP they also
+    include the Ethernet padding of short frames, as the dataset's tool counted it
   - times are whole microseconds
   - "Packet Length Mean/Std" count the first packet's length twice; Std divides by n - 1
   - the two rate features are NaN when the flow lasts zero microseconds
@@ -31,6 +32,12 @@ with open(FEATURES_PATH, encoding="utf-8") as _f:
 
 _US = 1_000_000  # microseconds per second
 
+# An Ethernet frame carries at least 46 bytes; a shorter IP packet is padded up to that.
+# The dataset's tool counted that padding as TCP payload: a bare ACK or RST (40-byte IP
+# packet) has length 6 there, and a SYN with only an MSS option (44 bytes) has length 2.
+# model_v1 learned those values, so the engine reproduces them (TRAINING_LOG.md entry 12).
+_MIN_ETHERNET_PAYLOAD = 46
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # LAYER 1 — Packet parser
@@ -44,7 +51,7 @@ class PacketInfo:
     src_port: int | None   # None for ICMP
     dst_port: int | None
     protocol: str          # "TCP", "UDP" or "ICMP"
-    payload_len: int       # bytes after the IP and TCP/UDP/ICMP headers, padding excluded
+    payload_len: int       # bytes after the IP and TCP/UDP/ICMP headers; TCP adds short-frame padding
     syn: bool = False
     ack: bool = False
     fin: bool = False
@@ -60,7 +67,8 @@ def parse_packet(packet) -> PacketInfo | None:
         return None
     ip = packet[IP]
 
-    # The IP total-length field excludes Ethernet padding, so payload sizes do too
+    # Lengths come from the IP total-length field, so they do not depend on whether
+    # the capture happened before or after the network card padded the frame
     ip_header = (ip.ihl or 5) * 4
     ip_total = ip.len if ip.len is not None else len(ip)
     ts = float(packet.time)
@@ -71,7 +79,7 @@ def parse_packet(packet) -> PacketInfo | None:
         tcp_header = (tcp.dataofs or 5) * 4
         return PacketInfo(
             ts, ip.src, ip.dst, int(tcp.sport), int(tcp.dport), "TCP",
-            max(0, ip_total - ip_header - tcp_header),
+            max(0, ip_total - ip_header - tcp_header) + max(0, _MIN_ETHERNET_PAYLOAD - ip_total),
             syn=bool(flags & 0x02), ack=bool(flags & 0x10),
             fin=bool(flags & 0x01), rst=bool(flags & 0x04),
         )

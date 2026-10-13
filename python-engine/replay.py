@@ -276,6 +276,7 @@ def run_synthetic(classifier, rng, rounds: int, detect_only: bool) -> list:
         classifier, records.append, local_ips={VICTIM},
         detect_only=detect_only, block_confidence=BLOCK_CONFIDENCE,
         is_whitelisted=lambda ip: False, block_ip=simulated_firewall(),
+        model_block_min_flows=1,          # each dataset row is one isolated flow
         throttle=AlertThrottle(), clock=clock,
     )
     tracker = FlowTracker()
