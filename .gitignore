@@ -21,6 +21,7 @@ Thumbs.db
 # Engine secrets and local training data
 python-engine/.env
 training/data/
+part_c/
 
 
 
