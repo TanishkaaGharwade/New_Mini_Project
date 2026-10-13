@@ -24,9 +24,19 @@ FEATURES_PATH   = os.path.join(REPO_ROOT, "training", "features.json")
 BENIGN_LABEL    = "Benign"
 
 # ─── Firebase (read by firebase_client.py) ────────────────────────────────────
-FIREBASE_CRED        = os.getenv("FIREBASE_CRED", "serviceAccountKey.json")
+FIREBASE_CRED        = os.getenv("FIREBASE_CRED", os.path.join(ENGINE_DIR, "serviceAccountKey.json"))
 FIRESTORE_COLLECTION = "threats"
 STATS_DOCUMENT       = "live"
+STATS_CLOUD_INTERVAL = 60      # seconds between stats/live writes; also the engine's heartbeat
+COMMAND_MAX_AGE      = 300     # seconds; older unblock requests are refused, not replayed
+CLOUD_QUEUE_MAXSIZE  = 1000    # Firestore writes waiting for the background writer
+
+# ─── AI explanations (Groq) ───────────────────────────────────────────────────
+# The key and model name come from python-engine/.env (GROQ_API_KEY, GROQ_MODEL)
+AI_TIMEOUT        = 15     # seconds to wait for one explanation
+AI_MAX_PER_MINUTE = 10     # API calls per minute; beyond this the offline text is used
+AI_REUSE_SECONDS  = 120    # reuse an explanation for the same label and source within this time
+AI_QUEUE_MAXSIZE  = 200    # explanations waiting for the background worker
 
 # ─── Flows ────────────────────────────────────────────────────────────────────
 FLOW_IDLE_TIMEOUT   = 15      # seconds without packets before a flow is closed
