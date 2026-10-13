@@ -1,0 +1,67 @@
+rules_version = '2';
+
+// CyberSentinel security rules.
+//
+// These apply to the dashboard (browsers). The engine writes with the Admin SDK,
+// which bypasses them, so "allow write: if false" still lets the engine write.
+//
+// Publish in the Firebase console (Firestore, Rules tab), then verify with:
+//   python python-engine/tools/check_rules.py
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // A user reads their own profile; admins read and manage all of them.
+    // An admin cannot change or delete their own profile, so the last admin cannot lock everyone out.
+    match /users/{uid} {
+      allow get:    if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list:   if isAdmin();
+      allow create: if isAdmin()
+                    && request.resource.data.role in ['admin', 'viewer'];
+      allow update: if isAdmin()
+                    && request.auth.uid != uid
+                    && request.resource.data.role in ['admin', 'viewer'];
+      allow delete: if isAdmin() && request.auth.uid != uid;
+    }
+
+    // Detections and counters: any signed-in user reads; only the engine writes.
+    match /threats/{id} {
+      allow read:  if signedIn();
+      allow write: if false;
+    }
+    match /stats/{id} {
+      allow read:  if signedIn();
+      allow write: if false;
+    }
+
+    // Unblock requests: an admin creates one, the engine carries it out and sets the status.
+    match /commands/{id} {
+      allow read:   if isAdmin();
+      allow create: if isAdmin()
+                    && request.resource.data.keys().hasOnly(['action', 'ip', 'requested_by', 'requested_at', 'status'])
+                    && request.resource.data.action == 'unblock'
+                    && request.resource.data.status == 'pending'
+                    && request.resource.data.requested_by == request.auth.uid
+                    && request.resource.data.requested_at == request.time
+                    && request.resource.data.ip is string
+                    && request.resource.data.ip.size() <= 45;
+      allow update, delete: if false;
+    }
+
+    // Audit log: admins read; only the engine writes.
+    match /audit/{id} {
+      allow read:  if isAdmin();
+      allow write: if false;
+    }
+  }
+}
