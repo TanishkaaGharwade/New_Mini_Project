@@ -1,9 +1,9 @@
 import { ShieldAlert, ShieldX, ShieldCheck, Filter } from 'lucide-react'
 import ThreatTable from '../components/ThreatTable'
 
-export default function ThreatsView({ threats = [], onExplain, onUnblock }) {
-  const attacksOnly = threats.filter(t => t.attack_type?.toLowerCase().replace(/\.$/, '') !== 'normal')
-  const blockedCount = threats.filter(t => t.blocked).length
+export default function ThreatsView({ threats = [], onExplain, requestUnblock, mode }) {
+  const attacksOnly = threats  // every stored record is a detection
+  const blockedCount = threats.filter(t => t.action === 'blocked').length
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -37,7 +37,8 @@ export default function ThreatsView({ threats = [], onExplain, onUnblock }) {
       <ThreatTable
         threats={threats}
         onExplain={onExplain}
-        onUnblock={onUnblock}
+        requestUnblock={requestUnblock}
+        mode={mode}
       />
     </div>
   )

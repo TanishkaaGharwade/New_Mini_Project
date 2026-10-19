@@ -5,10 +5,13 @@ import { AdminRoute, ConfigGate, ProtectedRoute } from './components/RouteGuards
 import { AuthProvider } from './context/AuthContext'
 import AuditLogPage from './pages/AuditLogPage'
 import DashboardPage from './pages/DashboardPage'
+import LandingPage from './pages/LandingPage'
 import LoginPage from './pages/LoginPage'
 import UsersPage from './pages/UsersPage'
+import { useFirestoreThreats } from './hooks/useFirestoreThreats'
+import { useDemoReplay } from './hooks/useDemoReplay'
 
-/** Everything under /app: signed-in users only, with the account bar on top. */
+/** Layout for signed-in users: AccountBar on top, page below */
 function SignedInLayout() {
   return (
     <ProtectedRoute>
@@ -18,21 +21,35 @@ function SignedInLayout() {
   )
 }
 
-// Routes (PART_B_CLOUD_LOGIN_AI.md, step B9). Part C adds the public landing
-// page at "/" and the demo at "/demo"; until then "/" leads to the live dashboard.
+/**
+ * Routes:
+ *  /            → LandingPage (public)
+ *  /demo        → DashboardPage with useDemoReplay (public)
+ *  /login       → LoginPage (public)
+ *  /app         → DashboardPage with useFirestoreThreats (signed-in)
+ *  /app/users   → UsersPage (admin)
+ *  /app/audit   → AuditLogPage (admin)
+ */
 export default function App() {
   return (
     <BrowserRouter>
       <ConfigGate>
         <AuthProvider>
           <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/demo" element={<DashboardPage dataHook={useDemoReplay} />} />
             <Route path="/login" element={<LoginPage />} />
+
+            {/* Protected routes */}
             <Route path="/app" element={<SignedInLayout />}>
-              <Route index element={<DashboardPage />} />
+              <Route index element={<DashboardPage dataHook={useFirestoreThreats} />} />
               <Route path="users" element={<AdminRoute><UsersPage /></AdminRoute>} />
               <Route path="audit" element={<AdminRoute><AuditLogPage /></AdminRoute>} />
             </Route>
-            <Route path="*" element={<Navigate to="/app" replace />} />
+
+            {/* Fallback → landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AuthProvider>
       </ConfigGate>

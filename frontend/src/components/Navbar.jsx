@@ -1,6 +1,6 @@
-import { Shield, Bell, Wifi, WifiOff, AlertTriangle } from 'lucide-react'
+import { Shield, Bell, Wifi, WifiOff, AlertTriangle, Play } from 'lucide-react'
 
-export default function Navbar({ totalAttacks = 0, isConnected = false }) {
+export default function Navbar({ totalAttacks = 0, engineOnline = false, mode = 'live' }) {
   return (
     <header style={{
       background: 'rgba(5,11,26,0.95)',
@@ -26,20 +26,32 @@ export default function Navbar({ totalAttacks = 0, isConnected = false }) {
       </div>
 
       {/* Center — Status pill */}
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 8,
-        background: isConnected ? 'rgba(0,227,150,0.1)' : 'rgba(148,163,184,0.08)',
-        border: `1px solid ${isConnected ? 'rgba(0,227,150,0.3)' : 'rgba(148,163,184,0.2)'}`,
-        borderRadius: 20, padding: '6px 16px',
-      }}>
-        <span className={isConnected ? "pulse-dot" : ""} style={{
-          width: 8, height: 8, borderRadius: '50%',
-          background: isConnected ? '#00e396' : '#64748b', display: 'inline-block',
-        }} />
-        <span style={{ fontSize: 12, fontWeight: 600, color: isConnected ? '#00e396' : '#94a3b8', letterSpacing: 1 }}>
-          {isConnected ? 'LIVE MONITORING ACTIVE' : 'WAITING FOR ENGINE (RUN MAIN.PY)'}
-        </span>
-        {isConnected ? <Wifi size={13} color="#00e396" /> : <WifiOff size={13} color="#94a3b8" />}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {mode === 'demo' && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            background: 'rgba(255,165,0,0.12)', border: '1px solid rgba(255,165,0,0.3)',
+            borderRadius: 20, padding: '5px 14px',
+            color: '#ffa500', fontSize: 12, fontWeight: 700,
+          }}>
+            <Play size={12} /> DEMO
+          </div>
+        )}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          background: engineOnline ? 'rgba(0,227,150,0.1)' : 'rgba(148,163,184,0.08)',
+          border: `1px solid ${engineOnline ? 'rgba(0,227,150,0.3)' : 'rgba(148,163,184,0.2)'}`,
+          borderRadius: 20, padding: '6px 16px',
+        }}>
+          <span className={engineOnline ? 'pulse-dot' : ''} style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: engineOnline ? '#00e396' : '#64748b', display: 'inline-block',
+          }} />
+          <span style={{ fontSize: 12, fontWeight: 600, color: engineOnline ? '#00e396' : '#94a3b8', letterSpacing: 1 }}>
+            {engineOnline ? 'ENGINE ONLINE' : 'ENGINE OFFLINE'}
+          </span>
+          {engineOnline ? <Wifi size={13} color="#00e396" /> : <WifiOff size={13} color="#94a3b8" />}
+        </div>
       </div>
 
       {/* Right — Actions */}

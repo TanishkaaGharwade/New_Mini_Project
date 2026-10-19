@@ -1,3 +1,9 @@
+/**
+ * DashboardPage — main shell for both Live and Demo modes.
+ *
+ * Accepts `dataHook` as a prop so it can be powered by either
+ * useFirestoreThreats (live) or useDemoReplay (demo) without changing internals.
+ */
 import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Sidebar from '../components/Sidebar'
@@ -5,32 +11,58 @@ import StatCards from '../components/StatCards'
 import ProtocolChart from '../components/ProtocolChart'
 import ThreatTable from '../components/ThreatTable'
 import TopologyGraph from '../components/TopologyGraph'
-import GeminiPanel from '../components/GeminiPanel'
-import { useLiveEngine } from '../hooks/useLiveEngine'
+import ExplanationPanel from '../components/ExplanationPanel'
 
 import ThreatsView from './ThreatsView'
 import TopologyView from './TopologyView'
 import AIAnalystView from './AIAnalystView'
 import SettingsView from './SettingsView'
 
-export default function DashboardPage() {
-  const [activeNav, setActiveNav] = useState('dashboard')
+/**
+ * @param {{ dataHook: function }} props
+ *   dataHook — a hook function (useFirestoreThreats or useDemoReplay) that
+ *   returns { threats, stats, engineOnline, mode, requestUnblock, error }
+ */
+export default function DashboardPage({ dataHook }) {
+  const [activeNav, setActiveNav]       = useState('dashboard')
   const [selectedThreat, setSelectedThreat] = useState(null)
 
-  // Real-time live engine connection via SSE & unblock API
-  const { threats, stats, isConnected, handleUnblock } = useLiveEngine()
+  const { threats, stats, engineOnline, mode, requestUnblock, error } =
+    dataHook?.() ?? { threats: [], stats: {}, engineOnline: false, mode: 'live', requestUnblock: null, error: null }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-base)' }}>
-      <Navbar totalAttacks={stats.totalAttacks} isConnected={isConnected} />
+      <Navbar
+        totalAttacks={stats?.total_attacks ?? 0}
+        engineOnline={engineOnline}
+        mode={mode}
+      />
+
+      {/* Demo banner */}
+      {mode === 'demo' && (
+        <div style={{
+          background: 'rgba(255,165,0,0.12)', borderBottom: '1px solid rgba(255,165,0,0.3)',
+          padding: '8px 24px', textAlign: 'center', color: '#ffa500', fontSize: 13, fontWeight: 600,
+        }}>
+          ⚠️ Simulated replay of recorded attack traffic. Not live data.
+        </div>
+      )}
+
+      {/* Firestore error banner */}
+      {error && (
+        <div style={{
+          background: 'rgba(255,69,96,0.10)', borderBottom: '1px solid rgba(255,69,96,0.3)',
+          padding: '8px 24px', textAlign: 'center', color: '#ff4560', fontSize: 13,
+        }}>
+          {error}
+        </div>
+      )}
 
       <div style={{ display: 'flex', flex: 1 }}>
         <Sidebar active={activeNav} onNav={setActiveNav} />
 
-        {/* Main content area */}
         <main style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
 
-          {/* Tab 1: Main Security Dashboard */}
           {activeNav === 'dashboard' && (
             <>
               <div style={{ marginBottom: 24 }}>
@@ -38,7 +70,7 @@ export default function DashboardPage() {
                   Security Command Center
                 </h1>
                 <p style={{ color: '#64748b', fontSize: 13 }}>
-                  Real-Time Network Intrusion Detection & Automated Prevention (CyberSentinel Engine)
+                  Real-Time Network Intrusion Detection &amp; Automated Prevention — CyberSentinel
                 </p>
               </div>
 
@@ -52,38 +84,35 @@ export default function DashboardPage() {
               <ThreatTable
                 threats={threats}
                 onExplain={t => setSelectedThreat(t)}
-                onUnblock={handleUnblock}
+                requestUnblock={requestUnblock}
+                mode={mode}
               />
             </>
           )}
 
-          {/* Tab 2: Dedicated Threat Log */}
           {activeNav === 'threats' && (
             <ThreatsView
               threats={threats}
               onExplain={t => setSelectedThreat(t)}
-              onUnblock={handleUnblock}
+              requestUnblock={requestUnblock}
+              mode={mode}
             />
           )}
 
-          {/* Tab 3: Dedicated Network Topology */}
           {activeNav === 'topology' && (
             <TopologyView threats={threats} />
           )}
 
-          {/* Tab 4: AI Analyst Chat */}
           {activeNav === 'ai' && (
-            <AIAnalystView threats={threats} />
+            <AIAnalystView threats={threats} mode={mode} />
           )}
 
-          {/* Tab 5: Settings & Config */}
           {activeNav === 'settings' && (
-            <SettingsView />
+            <SettingsView stats={stats} />
           )}
 
-          {/* Gemini AI Side Panel for Threat Explanations */}
           {selectedThreat && (
-            <GeminiPanel
+            <ExplanationPanel
               threat={selectedThreat}
               onClose={() => setSelectedThreat(null)}
             />

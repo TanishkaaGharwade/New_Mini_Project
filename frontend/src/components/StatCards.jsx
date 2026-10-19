@@ -1,8 +1,14 @@
-import { Package, ShieldX, ShieldOff, TrendingUp } from 'lucide-react'
+/**
+ * StatCards — maps the new stats/live field names.
+ *
+ * Old names (totalPackets, totalAttacks, blockedIPs, threatLevel) are gone.
+ * New names: total_packets, total_flows, total_attacks, blocked_ips (from Firestore stats/live).
+ */
+import { Package, ShieldX, ShieldOff, Activity } from 'lucide-react'
 
 const CARDS = [
   {
-    id: 'totalPackets',
+    id: 'total_packets',
     label: 'Total Packets',
     icon: Package,
     color: '#00d4ff',
@@ -11,7 +17,7 @@ const CARDS = [
     format: v => v?.toLocaleString() ?? '0',
   },
   {
-    id: 'totalAttacks',
+    id: 'total_attacks',
     label: 'Attacks Detected',
     icon: ShieldX,
     color: '#ff4560',
@@ -20,7 +26,7 @@ const CARDS = [
     format: v => v?.toLocaleString() ?? '0',
   },
   {
-    id: 'blockedIPs',
+    id: 'blocked_ips',
     label: 'IPs Blocked',
     icon: ShieldOff,
     color: '#ffa500',
@@ -29,13 +35,13 @@ const CARDS = [
     format: v => v?.toLocaleString() ?? '0',
   },
   {
-    id: 'threatLevel',
-    label: 'Threat Level',
-    icon: TrendingUp,
+    id: 'total_flows',
+    label: 'Total Flows',
+    icon: Activity,
     color: '#00e396',
     bgGlow: 'rgba(0,227,150,0.08)',
     border: 'rgba(0,227,150,0.2)',
-    format: v => `${v ?? '0'}%`,
+    format: v => v?.toLocaleString() ?? '0',
   },
 ]
 
@@ -79,7 +85,8 @@ export default function StatCards({ stats }) {
               <Icon size={16} color={color} />
             </div>
           </div>
-          <div style={{ fontSize: 32, fontWeight: 700, color, lineHeight: 1, letterSpacing: '-1px' }}
+          <div
+            style={{ fontSize: 32, fontWeight: 700, color, lineHeight: 1, letterSpacing: '-1px' }}
             className="count-up"
           >
             {format(stats?.[id])}

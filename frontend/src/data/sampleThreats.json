@@ -1,0 +1,351 @@
+[
+  {
+    "id": "sample-01",
+    "timestamp": "2026-10-19T08:01:00Z",
+    "src_ip": "198.51.100.42",
+    "src_port": 51544,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 80,
+    "protocol": "TCP",
+    "label": "PortScan",
+    "confidence": 0.97,
+    "trigger": "both",
+    "action": "blocked",
+    "packet_count": 40,
+    "evidence": [
+      { "feature": "distinct ports in 5 s", "value": 38 },
+      { "feature": "Flow Packets/s", "value": 2100.5 }
+    ],
+    "explanation": {
+      "severity": "HIGH",
+      "summary": "Source IP 198.51.100.42 probed 38 distinct ports within 5 seconds, a clear reconnaissance pattern preceding an intrusion attempt.",
+      "mechanism": "TCP SYN packets were sent to sequential ports without completing the 3-way handshake. High Flow Packets/s (2100) confirms automated scanning tooling.",
+      "recommendation": "The source IP has been blocked in Windows Firewall. Review other hosts for contact with this IP.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-02",
+    "timestamp": "2026-10-19T08:03:15Z",
+    "src_ip": "203.0.113.77",
+    "src_port": 0,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 443,
+    "protocol": "TCP",
+    "label": "SynFlood",
+    "confidence": null,
+    "trigger": "rule",
+    "action": "blocked",
+    "packet_count": 512,
+    "evidence": [
+      { "feature": "SYN without ACK in 2 s", "value": 145 }
+    ],
+    "explanation": {
+      "severity": "CRITICAL",
+      "summary": "145 SYN packets without corresponding ACKs were received from 203.0.113.77 within 2 seconds, exhausting the server's TCP backlog.",
+      "mechanism": "SYN flood sends half-open connection requests faster than the OS can expire them, causing legitimate connections to be refused.",
+      "recommendation": "Rate-limiting rule applied and IP blocked. Consider enabling SYN cookies at the OS level.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-03",
+    "timestamp": "2026-10-19T08:07:44Z",
+    "src_ip": "198.51.100.88",
+    "src_port": 12345,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 22,
+    "protocol": "TCP",
+    "label": "BruteForce",
+    "confidence": 0.89,
+    "trigger": "model",
+    "action": "alert_only",
+    "packet_count": 210,
+    "evidence": [
+      { "feature": "Flow Duration", "value": 18.4 },
+      { "feature": "Fwd Packet Length Mean", "value": 48.2 },
+      { "feature": "Flow Packets/s", "value": 11.4 }
+    ],
+    "explanation": {
+      "severity": "HIGH",
+      "summary": "Repeated small packets on port 22 (SSH) with high flow duration indicate a dictionary-based brute-force login attempt.",
+      "mechanism": "The attacker sends rapid authentication requests with different credentials. Small fixed-size packets are characteristic of credential replay.",
+      "recommendation": "Consider blocking after threshold exceeded. Enable SSH key-only authentication and fail2ban.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-04",
+    "timestamp": "2026-10-19T08:11:02Z",
+    "src_ip": "192.0.2.55",
+    "src_port": 0,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 0,
+    "protocol": "ICMP",
+    "label": "IcmpFlood",
+    "confidence": null,
+    "trigger": "rule",
+    "action": "blocked",
+    "packet_count": 1200,
+    "evidence": [
+      { "feature": "ICMP packets in 2 s", "value": 113 }
+    ],
+    "explanation": {
+      "severity": "CRITICAL",
+      "summary": "113 ICMP echo requests per 2-second window far exceed normal ping activity, indicating an ICMP flood DoS.",
+      "mechanism": "High-volume ICMP flooding saturates the network interface and wastes CPU processing echo replies.",
+      "recommendation": "IP blocked. ICMP rate-limit rule active.",
+      "source": "offline"
+    }
+  },
+  {
+    "id": "sample-05",
+    "timestamp": "2026-10-19T08:15:30Z",
+    "src_ip": "203.0.113.100",
+    "src_port": 51200,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 80,
+    "protocol": "TCP",
+    "label": "DoS",
+    "confidence": 0.95,
+    "trigger": "model",
+    "action": "blocked",
+    "packet_count": 800,
+    "evidence": [
+      { "feature": "Total Fwd Packets", "value": 760 },
+      { "feature": "Flow Bytes/s", "value": 98432.1 },
+      { "feature": "Flow Duration", "value": 0.82 }
+    ],
+    "explanation": {
+      "severity": "CRITICAL",
+      "summary": "Extremely high byte rate (98 KB/s) with 760 forward packets in under 1 second matches a Hulk-style HTTP flood pattern.",
+      "mechanism": "DoS tools send unique randomised HTTP requests to bypass caching, overwhelming the web server.",
+      "recommendation": "Source IP blocked. Rate limiting and WAF rules recommended.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-06",
+    "timestamp": "2026-10-19T08:18:00Z",
+    "src_ip": "198.51.100.200",
+    "src_port": 41122,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 53,
+    "protocol": "UDP",
+    "label": "DDoS",
+    "confidence": 0.91,
+    "trigger": "model",
+    "action": "blocked",
+    "packet_count": 950,
+    "evidence": [
+      { "feature": "Total Fwd Packets", "value": 920 },
+      { "feature": "Bwd Packet Length Mean", "value": 512.0 }
+    ],
+    "explanation": {
+      "severity": "CRITICAL",
+      "summary": "UDP amplification DDoS targeting port 53. High backward packet sizes indicate DNS amplification from open resolvers.",
+      "mechanism": "Small DNS queries return large responses, amplifying traffic volume directed at the victim.",
+      "recommendation": "Block spoofed UDP source. Restrict DNS recursion to authorised clients only.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-07",
+    "timestamp": "2026-10-19T08:22:10Z",
+    "src_ip": "192.0.2.77",
+    "src_port": 55678,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 8080,
+    "protocol": "TCP",
+    "label": "Botnet",
+    "confidence": 0.61,
+    "trigger": "model",
+    "action": "detect_only",
+    "packet_count": 22,
+    "evidence": [
+      { "feature": "Flow IAT Mean", "value": 4201.3 },
+      { "feature": "Flow IAT Std", "value": 312.1 }
+    ],
+    "evidence_note": "Confidence below block threshold (0.90); detect-only mode active.",
+    "explanation": {
+      "severity": "MEDIUM",
+      "summary": "Periodic low-volume beaconing with highly regular inter-arrival times is consistent with bot C2 heartbeat behaviour.",
+      "mechanism": "Bots check in with command-and-control servers at fixed intervals, creating distinctive IAT patterns.",
+      "recommendation": "Monitor this IP. Block if further activity confirms C2 communication.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-08",
+    "timestamp": "2026-10-19T08:25:50Z",
+    "src_ip": "198.51.100.33",
+    "src_port": 33100,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 21,
+    "protocol": "TCP",
+    "label": "BruteForce",
+    "confidence": 0.93,
+    "trigger": "both",
+    "action": "blocked",
+    "packet_count": 340,
+    "evidence": [
+      { "feature": "distinct ports in 5 s", "value": 1 },
+      { "feature": "Fwd Packet Length Mean", "value": 46.1 }
+    ],
+    "explanation": {
+      "severity": "HIGH",
+      "summary": "FTP brute force: repeated small-packet connections to port 21 consistent with credential dictionary attack.",
+      "mechanism": "Each authentication attempt produces a short flow. FTP sends credentials in plaintext, making capture easy.",
+      "recommendation": "IP blocked. Disable anonymous FTP. Use SFTP or FTPS instead.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-09",
+    "timestamp": "2026-10-19T08:29:00Z",
+    "src_ip": "203.0.113.50",
+    "src_port": 49300,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 443,
+    "protocol": "TCP",
+    "label": "DoS",
+    "confidence": 0.88,
+    "trigger": "model",
+    "action": "alert_only",
+    "packet_count": 200
+  },
+  {
+    "id": "sample-10",
+    "timestamp": "2026-10-19T08:32:45Z",
+    "src_ip": "192.0.2.120",
+    "src_port": 60000,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 22,
+    "protocol": "TCP",
+    "label": "PortScan",
+    "confidence": 0.78,
+    "trigger": "model",
+    "action": "detect_only",
+    "packet_count": 18,
+    "evidence": [
+      { "feature": "distinct ports in 5 s", "value": 22 }
+    ],
+    "explanation": {
+      "severity": "HIGH",
+      "summary": "22 unique ports contacted in under 5 seconds; just above the rule threshold but below block confidence.",
+      "mechanism": "Slow-rate port scan designed to avoid rule-based detection by staying near threshold.",
+      "recommendation": "Monitor. Increase scan rate detection sensitivity or lower the confidence block threshold.",
+      "source": "offline"
+    }
+  },
+  {
+    "id": "sample-11",
+    "timestamp": "2026-10-19T08:35:00Z",
+    "src_ip": "198.51.100.5",
+    "src_port": 8080,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 80,
+    "protocol": "TCP",
+    "label": "DDoS",
+    "confidence": 0.99,
+    "trigger": "model",
+    "action": "unblocked",
+    "packet_count": 1500,
+    "evidence": [
+      { "feature": "Total Fwd Packets", "value": 1480 }
+    ],
+    "explanation": {
+      "severity": "CRITICAL",
+      "summary": "Previously blocked DDoS source — unblocked by admin after investigation confirmed false positive.",
+      "mechanism": "High packet count matched DDoS pattern. Further investigation revealed a misconfigured load balancer.",
+      "recommendation": "Add IP to whitelist if confirmed legitimate. Review load-balancer config.",
+      "source": "ai"
+    }
+  },
+  {
+    "id": "sample-12",
+    "timestamp": "2026-10-19T08:38:20Z",
+    "src_ip": "203.0.113.9",
+    "src_port": 44444,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 3389,
+    "protocol": "TCP",
+    "label": "BruteForce",
+    "confidence": null,
+    "trigger": "rule",
+    "action": "blocked",
+    "packet_count": 88,
+    "evidence": [
+      { "feature": "SYN without ACK in 2 s", "value": 102 }
+    ]
+  },
+  {
+    "id": "sample-13",
+    "timestamp": "2026-10-19T08:40:05Z",
+    "src_ip": "192.0.2.44",
+    "src_port": 5000,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 443,
+    "protocol": "TCP",
+    "label": "Botnet",
+    "confidence": 0.58,
+    "trigger": "model",
+    "action": "whitelisted",
+    "packet_count": 12,
+    "explanation": {
+      "severity": "LOW",
+      "summary": "Flow matched Botnet pattern at low confidence; source IP is on the whitelist (internal monitoring agent).",
+      "mechanism": "Regular heartbeat traffic from internal tool matched bot IAT signature.",
+      "recommendation": "No action required. Verify the monitoring agent is expected.",
+      "source": "offline"
+    }
+  },
+  {
+    "id": "sample-14",
+    "timestamp": "2026-10-19T08:44:30Z",
+    "src_ip": "198.51.100.77",
+    "src_port": 0,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 0,
+    "protocol": "ICMP",
+    "label": "IcmpFlood",
+    "confidence": null,
+    "trigger": "rule",
+    "action": "alert_only",
+    "packet_count": 400,
+    "evidence": [
+      { "feature": "ICMP packets in 2 s", "value": 108 }
+    ],
+    "explanation": {
+      "severity": "HIGH",
+      "summary": "ICMP flood detected; detect-only mode is active so no firewall rule was created.",
+      "mechanism": "High-rate echo requests. Rule fired but DETECT_ONLY flag prevented blocking.",
+      "recommendation": "Switch engine to active mode to enable automatic blocking.",
+      "source": "offline"
+    }
+  },
+  {
+    "id": "sample-15",
+    "timestamp": "2026-10-19T08:48:00Z",
+    "src_ip": "203.0.113.199",
+    "src_port": 9999,
+    "dst_ip": "192.168.1.4",
+    "dst_port": 443,
+    "protocol": "TCP",
+    "label": "SynFlood",
+    "confidence": null,
+    "trigger": "rule",
+    "action": "blocked",
+    "packet_count": 650,
+    "evidence": [
+      { "feature": "SYN without ACK in 2 s", "value": 188 }
+    ],
+    "explanation": {
+      "severity": "CRITICAL",
+      "summary": "188 half-open SYN connections in 2 seconds — second highest rate recorded this session.",
+      "mechanism": "SYN flood exploiting TCP state machine; each SYN holds a connection slot for up to 75 seconds.",
+      "recommendation": "IP blocked. Enable SYN cookies. Verify upstream ISP filtering.",
+      "source": "ai"
+    }
+  }
+]

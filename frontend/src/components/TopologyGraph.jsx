@@ -30,14 +30,14 @@ export default function TopologyGraph({ threats = [] }) {
       const srcIp = threat.src_ip
       if (!srcIp) return
 
-      const isAttack = threat.attack_type?.toLowerCase().replace(/\.$/, '') !== 'normal'
-      const isBlocked = threat.blocked
+      const isAttack = true  // every stored record is a detection
+      const isBlocked = threat.action === 'blocked'
 
       if (!addedNodes.has(srcIp)) {
         addedNodes.add(srcIp)
         nodesArray.push({
           id: srcIp,
-          label: `${srcIp}\n[${threat.attack_type || 'normal'}]`,
+          label: `${srcIp}\n[${threat.label || '?'}]`,
           shape: isAttack ? 'diamond' : 'dot',
           size: isAttack ? 18 : 12,
           color: {

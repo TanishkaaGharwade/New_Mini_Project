@@ -14,7 +14,7 @@ window.addEventListener('error', (e) => {
   }
 })
 
-createRoot(document.getElementById('app')).render(
+createRoot(document.getElementById('app')!).render(
   <StrictMode>
     <App />
   </StrictMode>,
