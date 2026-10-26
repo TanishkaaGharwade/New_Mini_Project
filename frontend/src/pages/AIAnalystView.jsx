@@ -10,19 +10,27 @@ import { Sparkles, Send, Bot, Lock, Radio } from 'lucide-react'
 import { auth } from '../firebaseConfig'
 import { useAuth } from '../context/AuthContext'
 
+/**
+ * Summary of the detections on screen, sent with each question. /api/chat expects
+ * an object (it rejects plain text) of at most 6,000 characters of JSON.
+ */
 function buildContext(threats) {
-  if (!threats || threats.length === 0) return 'No threats recorded yet.'
-  const counts = {}
-  const topIPs = {}
-  threats.forEach(t => {
-    counts[t.label] = (counts[t.label] ?? 0) + 1
-    if (t.src_ip) topIPs[t.src_ip] = (topIPs[t.src_ip] ?? 0) + 1
-  })
-  const labelSummary = Object.entries(counts).map(([k, v]) => `${k}: ${v}`).join(', ')
-  const ipSummary = Object.entries(topIPs).sort((a, b) => b[1] - a[1]).slice(0, 5)
-    .map(([ip, n]) => `${ip} (${n})`).join(', ')
-  const blockedCount = threats.filter(t => t.action === 'blocked').length
-  return `Threat counts by label: ${labelSummary}. Top source IPs: ${ipSummary}. Blocked: ${blockedCount}/${threats.length} threats.`
+  const count = (key) => threats.reduce((acc, t) => {
+    const k = t[key] ?? 'unknown'
+    acc[k] = (acc[k] ?? 0) + 1
+    return acc
+  }, {})
+  const sources = Object.entries(count('src_ip')).sort((a, b) => b[1] - a[1]).slice(0, 5)
+  return {
+    total_detections: threats.length,
+    by_label: count('label'),
+    by_action: count('action'),
+    top_sources: sources.map(([ip, n]) => ({ ip, detections: n })),
+    latest: threats.slice(0, 10).map(t => ({
+      time: t.timestamp, src_ip: t.src_ip, dst_port: t.dst_port, protocol: t.protocol,
+      label: t.label, confidence: t.confidence, trigger: t.trigger, action: t.action,
+    })),
+  }
 }
 
 export default function AIAnalystView({ threats = [], mode }) {
@@ -74,11 +82,15 @@ export default function AIAnalystView({ threats = [], mode }) {
         body: JSON.stringify({ question, context }),
       })
 
-      if (res.status === 401) throw new Error('Session expired. Please sign in again.')
-      if (res.status === 429) throw new Error('Rate limit reached. Please wait a moment.')
-      if (!res.ok) throw new Error(`Server error (${res.status}).`)
+      const data = await res.json().catch(() => ({}))
+      // The server explains every refusal in data.error; show that rather than a bare status code
+      if (!res.ok) {
+        const fallback = res.status === 404
+          ? 'The AI service is not available here (no /api/chat). Restart "npm run dev", or use the deployed site.'
+          : `Server error (${res.status}).`
+        throw new Error(data.error || fallback)
+      }
 
-      const data = await res.json()
       setMessages(prev => [...prev, {
         sender: 'ai',
         text: data.answer ?? '(No response)',

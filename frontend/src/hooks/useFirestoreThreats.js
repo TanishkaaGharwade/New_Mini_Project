@@ -15,8 +15,8 @@
  */
 import { useState, useEffect, useCallback } from 'react'
 import {
-  collection, onSnapshot, query, orderBy, limit, doc,
-  addDoc, serverTimestamp, getDoc,
+  collection, onSnapshot, query, orderBy, limit, doc, where,
+  addDoc, serverTimestamp,
 } from 'firebase/firestore'
 import { db, auth } from '../firebaseConfig'
 
@@ -40,7 +40,12 @@ function checkOnline(updatedAt) {
   return Date.now() - ts.getTime() < 2 * 60 * 1000
 }
 
-export function useFirestoreThreats() {
+/**
+ * @param {{ sinceHours?: number|null }} options
+ *   sinceHours — only detections from the last N hours; null or 0 for all of them.
+ *   Records carry an ISO-8601 UTC timestamp string, which sorts like the time itself.
+ */
+export function useFirestoreThreats({ sinceHours = 24 } = {}) {
   const [threats, setThreats]           = useState([])
   const [stats, setStats]               = useState(mapStats(null))
   const [engineOnline, setEngineOnline] = useState(false)
@@ -59,9 +64,13 @@ export function useFirestoreThreats() {
       return
     }
 
-    // --- Threats listener (latest 100, newest first) ---
+    // --- Threats listener (latest 100 in the chosen window, newest first) ---
+    const window = sinceHours
+      ? [where('timestamp', '>=', new Date(Date.now() - sinceHours * 3600_000).toISOString().slice(0, 19) + 'Z')]
+      : []
     const q = query(
       collection(db, 'threats'),
+      ...window,
       orderBy('timestamp', 'desc'),
       limit(100),
     )
@@ -99,7 +108,7 @@ export function useFirestoreThreats() {
       unsubThreats()
       unsubStats()
     }
-  }, [])
+  }, [sinceHours])
 
   /**
    * requestUnblock(ip) — write a commands document and watch for status change.
@@ -109,7 +118,6 @@ export function useFirestoreThreats() {
   const requestUnblock = useCallback(async (ip) => {
     if (!db || !auth?.currentUser) throw new Error('Not signed in')
 
-    const idToken = await auth.currentUser.getIdToken()
     const docRef = await addDoc(collection(db, 'commands'), {
       action:       'unblock',
       ip,

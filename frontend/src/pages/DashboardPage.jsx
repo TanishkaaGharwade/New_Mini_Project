@@ -23,12 +23,20 @@ import SettingsView from './SettingsView'
  *   dataHook — a hook function (useFirestoreThreats or useDemoReplay) that
  *   returns { threats, stats, engineOnline, mode, requestUnblock, error }
  */
+const TIME_RANGES = [
+  { hours: 1,    label: 'Last hour' },
+  { hours: 24,   label: 'Last 24 hours' },
+  { hours: 168,  label: 'Last 7 days' },
+  { hours: null, label: 'All' },
+]
+
 export default function DashboardPage({ dataHook }) {
   const [activeNav, setActiveNav]       = useState('dashboard')
   const [selectedThreat, setSelectedThreat] = useState(null)
+  const [sinceHours, setSinceHours]     = useState(24)
 
   const { threats, stats, engineOnline, mode, requestUnblock, error } =
-    dataHook?.() ?? { threats: [], stats: {}, engineOnline: false, mode: 'live', requestUnblock: null, error: null }
+    dataHook?.({ sinceHours }) ?? { threats: [], stats: {}, engineOnline: false, mode: 'live', requestUnblock: null, error: null }
 
   // Show the latest copy of the selected record, so an explanation the engine adds
   // after the panel opened appears without reopening it
@@ -53,6 +61,24 @@ export default function DashboardPage({ dataHook }) {
               padding: '8px 24px', borderRadius: 8, marginBottom: 16, textAlign: 'center', color: '#ffa500', fontSize: 13, fontWeight: 600,
             }}>
               ⚠️ Simulated replay of recorded attack traffic. Not live data.
+            </div>
+          )}
+
+          {/* Live mode: which detections to show. The counters cover the current engine run. */}
+          {mode === 'live' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, flexWrap: 'wrap', fontSize: 12, color: '#64748b' }}>
+              <span>Detections from:</span>
+              {TIME_RANGES.map(r => (
+                <button key={r.label} onClick={() => setSinceHours(r.hours)} style={{
+                  padding: '4px 12px', borderRadius: 20, cursor: 'pointer', fontSize: 12,
+                  border: `1px solid ${sinceHours === r.hours ? 'rgba(0,212,255,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                  background: sinceHours === r.hours ? 'rgba(0,212,255,0.12)' : 'transparent',
+                  color: sinceHours === r.hours ? '#00d4ff' : '#94a3b8',
+                }}>
+                  {r.label}
+                </button>
+              ))}
+              <span style={{ marginLeft: 'auto' }}>Counters below cover the engine's current run</span>
             </div>
           )}
 
