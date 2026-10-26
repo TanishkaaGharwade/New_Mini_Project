@@ -148,7 +148,10 @@ npm run dev                  # http://localhost:5173
 
 Dashboard tabs: **Dashboard** (counters, protocol chart, attack graph, threat log),
 **Threats** (filterable log), **Topology** (full-screen attack graph), **AI Analyst**
-(chat; needs the deployed `/api/chat`), **Settings** (model facts and limitations).
+(chat with Groq; `npm run dev` serves `/api/chat` locally using `GROQ_API_KEY` from
+`python-engine/.env`), **Settings** (model facts and limitations). The live dashboard
+shows detections from the last hour, 24 hours (default), 7 days or all time; the counters
+cover the engine's current run.
 **Explain** on any row shows severity, what happened, how the attack works and what to do.
 
 ---
@@ -171,7 +174,19 @@ exist on a real network. Detections appear on the dashboard within seconds.
 ### With two laptops
 
 Put both on a network you control (a phone hotspot works; avoid college networks).
-On the attacker (Kali Linux recommended), using the target's IP from `ipconfig`:
+Start the engine with `--block` on the protected PC and note its IP from `ipconfig`.
+
+**Attacker on Windows** — copy `python-engine/simulate_attack.py`, install Python,
+`pip install scapy` and Npcap, then in an Administrator terminal:
+
+```powershell
+python simulate_attack.py --target <protected-pc-ip>
+```
+
+The packets carry the attacker's real address, so the protected PC blocks that laptop;
+unblock it from the dashboard afterwards.
+
+**Attacker on Kali Linux** (or any machine with these tools):
 
 | Attack | Command | Detected as |
 |---|---|---|
@@ -221,7 +236,6 @@ python -m pytest -q
 - Scores come from the CICIDS2017 lab network; real traffic produces some false alarms,
   which the 70% threshold reduces.
 - Windows and IPv4 only. Blocks stay until someone removes them.
-- The AI Analyst chat runs as a Vercel server function, so it does not work with `npm run dev`.
 
 ## Acknowledgements
 
