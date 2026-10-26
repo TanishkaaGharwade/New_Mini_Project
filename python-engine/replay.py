@@ -40,7 +40,7 @@ from datetime import datetime, timezone
 
 from config import ACTIVE_MODEL, REPO_ROOT, BLOCK_CONFIDENCE, BENIGN_LABEL
 from classifier import ThreatClassifier
-from detector import AlertThrottle, DetectionEngine, decide, make_threat, resolve_action
+from detector import AlertThrottle, DetectionEngine, decide, is_reportable, make_threat, resolve_action
 from feature_extractor import FlowTracker, PacketInfo
 from rules import RuleEngine
 from ai import offline_explanation
@@ -336,7 +336,7 @@ def run_csv(classifier, rng, data_dir: str, per_class: int, detect_only: bool) -
     records = []
     t = datetime(2026, 10, 12, 9, 0, tzinfo=timezone.utc).timestamp()
     for (_, row), vector, (label, confidence) in zip(sample.iterrows(), vectors, verdicts):
-        if not classifier.is_attack(label):
+        if not is_reportable(classifier, label, confidence):     # same filter as the live engine
             continue
         src_ip = pool.next()
         trigger, action = decide(False, True, confidence, BLOCK_CONFIDENCE)

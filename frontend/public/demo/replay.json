@@ -1,155 +1,33 @@
 {
   "model_version": "v1",
-  "generated_at": "2026-10-12T19:42:40Z",
+  "generated_at": "2026-10-26T11:22:48Z",
   "events": [
     {
-      "delay_ms": 1338,
+      "delay_ms": 1243,
       "threat": {
-        "timestamp": "2026-10-12T19:42:41Z",
-        "src_ip": "203.0.113.71",
-        "src_port": 57034,
+        "timestamp": "2026-10-26T11:22:49Z",
+        "src_ip": "192.0.2.36",
+        "src_port": 52141,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
         "label": "DoS",
-        "confidence": 0.7523,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2303.53
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2291.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2464,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:43Z",
-        "src_ip": "192.0.2.139",
-        "src_port": 63242,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.9027,
+        "confidence": 1.0,
         "trigger": "model",
         "action": "blocked",
-        "packet_count": 30,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2072,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:45Z",
-        "src_ip": "192.0.2.92",
-        "src_port": 53846,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.8318,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2327,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:48Z",
-        "src_ip": "192.0.2.221",
-        "src_port": 62978,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4825,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
+        "packet_count": 12,
         "evidence": [
           {
-            "feature": "Packet Length Std",
-            "value": 2330.81
-          },
-          {
             "feature": "Bwd Packet Length Mean",
-            "value": 2305.4
+            "value": 1932.5
           },
           {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1016,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:49Z",
-        "src_ip": "192.0.2.114",
-        "src_port": 54006,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.8792,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 180,
-        "evidence": [
+            "feature": "Flow IAT Max",
+            "value": 98200000
+          },
           {
             "feature": "Packet Length Std",
-            "value": 2334.95
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2320.6
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
+            "value": 1499.13
           }
         ],
         "explanation": {
@@ -162,758 +40,85 @@
       }
     },
     {
-      "delay_ms": 1724,
+      "delay_ms": 1155,
       "threat": {
-        "timestamp": "2026-10-12T19:42:50Z",
-        "src_ip": "192.0.2.61",
-        "src_port": 59264,
+        "timestamp": "2026-10-26T11:22:50Z",
+        "src_ip": "192.0.2.236",
+        "src_port": 54421,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4725,
+        "label": "DoS",
+        "confidence": 1.0,
         "trigger": "model",
-        "action": "alert_only",
+        "action": "blocked",
         "packet_count": 10,
         "evidence": [
           {
             "feature": "Packet Length Std",
-            "value": 2318.12
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2292.6
+            "value": 1825.86
           },
           {
             "feature": "Bwd Packet Length Max",
-            "value": 5840
+            "value": 5792
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 1656.43
           }
         ],
         "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 1040,
+      "delay_ms": 1446,
       "threat": {
-        "timestamp": "2026-10-12T19:42:51Z",
+        "timestamp": "2026-10-26T11:22:51Z",
+        "src_ip": "198.51.100.142",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2145,
+      "threat": {
+        "timestamp": "2026-10-26T11:22:53Z",
         "src_ip": "203.0.113.222",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2297,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:54Z",
-        "src_ip": "203.0.113.246",
-        "src_port": 59638,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1769,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:56Z",
-        "src_ip": "198.51.100.72",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1924,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:57Z",
-        "src_ip": "203.0.113.194",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1339,
-      "threat": {
-        "timestamp": "2026-10-12T19:42:59Z",
-        "src_ip": "192.0.2.195",
-        "src_port": 52315,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7623,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 350,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2314.28
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2302.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1540,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:00Z",
-        "src_ip": "198.51.100.198",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 729,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:01Z",
-        "src_ip": "192.0.2.41",
-        "src_port": 56962,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7348,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 170,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2324.69
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2310.4
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1439,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:03Z",
-        "src_ip": "198.51.100.240",
-        "src_port": 50076,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1229,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:04Z",
-        "src_ip": "198.51.100.218",
-        "src_port": 55128,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1424,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:05Z",
-        "src_ip": "198.51.100.225",
-        "src_port": 65144,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 8020,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2152,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:07Z",
-        "src_ip": "192.0.2.13",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2290,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:10Z",
-        "src_ip": "192.0.2.39",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1969,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:12Z",
-        "src_ip": "192.0.2.229",
-        "src_port": 61555,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4725,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 20,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2332.6
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2307.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1684,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:13Z",
-        "src_ip": "203.0.113.101",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 873,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:14Z",
-        "src_ip": "198.51.100.73",
-        "src_port": 55563,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7382,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2310.07
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2299.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 822,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:15Z",
-        "src_ip": "203.0.113.116",
-        "src_port": 62484,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2173,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:17Z",
-        "src_ip": "192.0.2.253",
-        "src_port": 60675,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 5036,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2068,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:19Z",
-        "src_ip": "203.0.113.246",
-        "src_port": 58352,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.7347,
-        "trigger": "both",
-        "action": "blocked",
-        "packet_count": 4,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 602,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:20Z",
-        "src_ip": "198.51.100.2",
-        "src_port": 50980,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.8792,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 190,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2337.16
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2323
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2298,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:22Z",
-        "src_ip": "203.0.113.71",
-        "src_port": 49632,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7492,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 180,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2322.83
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2310.8
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 628,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:23Z",
-        "src_ip": "198.51.100.226",
-        "src_port": 63611,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4825,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 60,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2318.72
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2293.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 986,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:24Z",
-        "src_ip": "203.0.113.6",
-        "src_port": 50182,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4825,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2339.59
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2314.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1998,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:26Z",
-        "src_ip": "198.51.100.177",
-        "src_port": 61973,
+        "src_port": 50643,
         "dst_ip": "192.168.1.4",
         "dst_port": 21,
         "protocol": "TCP",
         "label": "BruteForce",
-        "confidence": 0.6152,
+        "confidence": 1.0,
         "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
+        "action": "blocked",
+        "packet_count": 2,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
@@ -925,167 +130,35 @@
       }
     },
     {
-      "delay_ms": 2125,
+      "delay_ms": 1393,
       "threat": {
-        "timestamp": "2026-10-12T19:43:28Z",
-        "src_ip": "198.51.100.101",
-        "src_port": 54098,
+        "timestamp": "2026-10-26T11:22:55Z",
+        "src_ip": "192.0.2.70",
+        "src_port": 57196,
         "dst_ip": "192.168.1.4",
-        "dst_port": 2149,
+        "dst_port": 8080,
         "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1567,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:29Z",
-        "src_ip": "203.0.113.112",
-        "src_port": 61643,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4725,
+        "label": "Botnet",
+        "confidence": 0.8298,
         "trigger": "model",
         "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2313.78
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2288.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 619,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:30Z",
-        "src_ip": "198.51.100.91",
-        "src_port": 60213,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4825,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 50,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2341.39
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2316
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2303,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:32Z",
-        "src_ip": "203.0.113.18",
-        "src_port": 61584,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.7768,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
+        "packet_count": 6,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 2150,
+      "delay_ms": 912,
       "threat": {
-        "timestamp": "2026-10-12T19:43:34Z",
-        "src_ip": "198.51.100.167",
-        "src_port": 55990,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 3698,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2134,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:37Z",
-        "src_ip": "192.0.2.87",
-        "src_port": 60400,
+        "timestamp": "2026-10-26T11:22:56Z",
+        "src_ip": "198.51.100.157",
+        "src_port": 56883,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
@@ -1110,10 +183,10 @@
       }
     },
     {
-      "delay_ms": 1815,
+      "delay_ms": 1648,
       "threat": {
-        "timestamp": "2026-10-12T19:43:38Z",
-        "src_ip": "198.51.100.169",
+        "timestamp": "2026-10-26T11:22:57Z",
+        "src_ip": "203.0.113.193",
         "src_port": 65218,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
@@ -1139,190 +212,10 @@
       }
     },
     {
-      "delay_ms": 2326,
+      "delay_ms": 1868,
       "threat": {
-        "timestamp": "2026-10-12T19:43:41Z",
-        "src_ip": "198.51.100.167",
-        "src_port": 61642,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 8970,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 643,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:41Z",
-        "src_ip": "192.0.2.139",
-        "src_port": 58491,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.6852,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1515,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:43Z",
-        "src_ip": "198.51.100.73",
-        "src_port": 59381,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7523,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 320,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2310.79
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2297.8
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 695,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:44Z",
-        "src_ip": "198.51.100.9",
-        "src_port": 64708,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.7292,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2260,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:46Z",
-        "src_ip": "203.0.113.30",
-        "src_port": 59897,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7492,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 180,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2322.67
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2309.8
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1103,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:47Z",
-        "src_ip": "203.0.113.68",
-        "src_port": 50395,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 6084,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1598,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:49Z",
-        "src_ip": "192.0.2.138",
+        "timestamp": "2026-10-26T11:22:59Z",
+        "src_ip": "203.0.113.73",
         "src_port": null,
         "dst_ip": "192.168.1.4",
         "dst_port": null,
@@ -1348,161 +241,34 @@
       }
     },
     {
-      "delay_ms": 1665,
+      "delay_ms": 1616,
       "threat": {
-        "timestamp": "2026-10-12T19:43:50Z",
-        "src_ip": "198.51.100.2",
-        "src_port": 55318,
+        "timestamp": "2026-10-26T11:23:01Z",
+        "src_ip": "198.51.100.32",
+        "src_port": 54923,
         "dst_ip": "192.168.1.4",
-        "dst_port": 80,
+        "dst_port": 8080,
         "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.7657,
+        "label": "Botnet",
+        "confidence": 0.8359,
         "trigger": "model",
         "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2325.24
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2312.6
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2190,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:52Z",
-        "src_ip": "198.51.100.8",
-        "src_port": 54406,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 9452,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 724,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:53Z",
-        "src_ip": "198.51.100.177",
-        "src_port": 61651,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.6625,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
+        "packet_count": 6,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 1680,
+      "delay_ms": 2019,
       "threat": {
-        "timestamp": "2026-10-12T19:43:55Z",
-        "src_ip": "198.51.100.9",
-        "src_port": 60963,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.8643,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1893,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:57Z",
-        "src_ip": "203.0.113.20",
-        "src_port": 63671,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.775,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 60,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2352.02
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2326.6
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1648,
-      "threat": {
-        "timestamp": "2026-10-12T19:43:58Z",
-        "src_ip": "192.0.2.123",
+        "timestamp": "2026-10-26T11:23:03Z",
+        "src_ip": "198.51.100.102",
         "src_port": null,
         "dst_ip": "192.168.1.4",
         "dst_port": null,
@@ -1528,13 +294,42 @@
       }
     },
     {
-      "delay_ms": 2139,
+      "delay_ms": 998,
       "threat": {
-        "timestamp": "2026-10-12T19:44:01Z",
-        "src_ip": "198.51.100.8",
-        "src_port": 64112,
+        "timestamp": "2026-10-26T11:23:04Z",
+        "src_ip": "198.51.100.252",
+        "src_port": null,
         "dst_ip": "192.168.1.4",
-        "dst_port": 5172,
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1335,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:05Z",
+        "src_ip": "192.0.2.163",
+        "src_port": 55326,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5757,
         "protocol": "TCP",
         "label": "PortScan",
         "confidence": null,
@@ -1557,63 +352,34 @@
       }
     },
     {
-      "delay_ms": 2101,
+      "delay_ms": 804,
       "threat": {
-        "timestamp": "2026-10-12T19:44:03Z",
-        "src_ip": "192.0.2.175",
-        "src_port": 62253,
+        "timestamp": "2026-10-26T11:23:06Z",
+        "src_ip": "203.0.113.178",
+        "src_port": 61570,
         "dst_ip": "192.168.1.4",
-        "dst_port": 21,
+        "dst_port": 8080,
         "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.6002,
+        "label": "Botnet",
+        "confidence": 0.99,
         "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
+        "action": "blocked",
+        "packet_count": 7,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 1453,
+      "delay_ms": 1668,
       "threat": {
-        "timestamp": "2026-10-12T19:44:04Z",
-        "src_ip": "203.0.113.143",
-        "src_port": 63085,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 8033,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2482,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:07Z",
-        "src_ip": "198.51.100.69",
+        "timestamp": "2026-10-26T11:23:08Z",
+        "src_ip": "203.0.113.190",
         "src_port": 49581,
         "dst_ip": "192.168.1.4",
         "dst_port": 2538,
@@ -1639,230 +405,522 @@
       }
     },
     {
-      "delay_ms": 2061,
+      "delay_ms": 1840,
       "threat": {
-        "timestamp": "2026-10-12T19:44:09Z",
+        "timestamp": "2026-10-26T11:23:10Z",
+        "src_ip": "192.0.2.114",
+        "src_port": 64752,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 3,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2235,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:12Z",
+        "src_ip": "198.51.100.154",
+        "src_port": 55530,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 7499,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1373,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:13Z",
+        "src_ip": "198.51.100.196",
+        "src_port": 55990,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 3698,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 921,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:14Z",
+        "src_ip": "203.0.113.141",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 897,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:15Z",
+        "src_ip": "192.0.2.42",
+        "src_port": 59870,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5880,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1289,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:16Z",
+        "src_ip": "192.0.2.100",
+        "src_port": 64216,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.8824,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 917,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:17Z",
+        "src_ip": "203.0.113.219",
+        "src_port": 49717,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.7127,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 2,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1526,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:19Z",
+        "src_ip": "192.0.2.151",
+        "src_port": 53289,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 4,
+        "evidence": [],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2193,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:21Z",
+        "src_ip": "192.0.2.173",
+        "src_port": 58029,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 24,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1270,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:22Z",
+        "src_ip": "198.51.100.13",
+        "src_port": 50221,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 4,
+        "evidence": [],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1894,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:24Z",
+        "src_ip": "192.0.2.205",
+        "src_port": 56653,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 12,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 1611.2
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 1932.5
+          },
+          {
+            "feature": "Flow IAT Max",
+            "value": 84900000
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1427,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:26Z",
+        "src_ip": "198.51.100.196",
+        "src_port": 61642,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8970,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 714,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:26Z",
+        "src_ip": "192.0.2.214",
+        "src_port": 57142,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.8226,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 608,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:27Z",
+        "src_ip": "203.0.113.206",
+        "src_port": 51356,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 939,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:28Z",
+        "src_ip": "198.51.100.171",
+        "src_port": 63435,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 12,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 8688
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 2467.06
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2319
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 860,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:29Z",
+        "src_ip": "192.0.2.180",
+        "src_port": 63085,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8033,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1111,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:30Z",
+        "src_ip": "198.51.100.207",
+        "src_port": 59638,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 676,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:30Z",
+        "src_ip": "203.0.113.168",
+        "src_port": 61951,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 865,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:31Z",
         "src_ip": "203.0.113.213",
-        "src_port": 55431,
+        "src_port": 55218,
         "dst_ip": "192.168.1.4",
-        "dst_port": 5978,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2043,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:11Z",
-        "src_ip": "198.51.100.225",
-        "src_port": 53648,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 8881,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2164,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:13Z",
-        "src_ip": "203.0.113.122",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1490,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:14Z",
-        "src_ip": "203.0.113.137",
-        "src_port": 58890,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.9067,
-        "trigger": "model",
-        "action": "blocked",
-        "packet_count": 250,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2335.38
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2323.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2138,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:16Z",
-        "src_ip": "198.51.100.27",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 2253,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:19Z",
-        "src_ip": "198.51.100.89",
-        "src_port": 57345,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 2799,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1787,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:20Z",
-        "src_ip": "203.0.113.139",
-        "src_port": 53875,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1060,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:22Z",
-        "src_ip": "198.51.100.177",
-        "src_port": 60996,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
+        "dst_port": 22,
         "protocol": "TCP",
         "label": "BruteForce",
-        "confidence": 0.5592,
+        "confidence": 0.8192,
         "trigger": "model",
         "action": "alert_only",
-        "packet_count": 30,
+        "packet_count": 4,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
@@ -1874,48 +932,104 @@
       }
     },
     {
-      "delay_ms": 936,
+      "delay_ms": 1059,
       "threat": {
-        "timestamp": "2026-10-12T19:44:22Z",
+        "timestamp": "2026-10-26T11:23:32Z",
         "src_ip": "192.0.2.93",
-        "src_port": 51078,
+        "src_port": 61616,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
-        "label": "SynFlood",
-        "confidence": null,
-        "trigger": "rule",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
         "action": "blocked",
-        "packet_count": 101,
+        "packet_count": 12,
         "evidence": [
           {
-            "feature": "SYNs without ACK in 2 s",
-            "value": 101
+            "feature": "Bwd Packet Length Max",
+            "value": 11595
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 3214.17
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2901.75
           }
         ],
         "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent a very large number of connection requests without completing any of them.",
-          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
-          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 674,
+      "delay_ms": 2436,
       "threat": {
-        "timestamp": "2026-10-12T19:44:23Z",
-        "src_ip": "192.0.2.211",
-        "src_port": 60447,
+        "timestamp": "2026-10-26T11:23:35Z",
+        "src_ip": "192.0.2.228",
+        "src_port": 60304,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.7814,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1187,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:36Z",
+        "src_ip": "203.0.113.23",
+        "src_port": 55193,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 5,
+        "evidence": [],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 679,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:37Z",
+        "src_ip": "192.0.2.216",
+        "src_port": 59491,
         "dst_ip": "192.168.1.4",
         "dst_port": 21,
         "protocol": "TCP",
         "label": "BruteForce",
-        "confidence": 0.8152,
+        "confidence": 0.7127,
         "trigger": "model",
         "action": "alert_only",
-        "packet_count": 30,
+        "packet_count": 2,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
@@ -1927,10 +1041,34 @@
       }
     },
     {
-      "delay_ms": 1621,
+      "delay_ms": 1362,
       "threat": {
-        "timestamp": "2026-10-12T19:44:25Z",
-        "src_ip": "203.0.113.157",
+        "timestamp": "2026-10-26T11:23:38Z",
+        "src_ip": "198.51.100.101",
+        "src_port": 62469,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.7581,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 2,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1382,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:39Z",
+        "src_ip": "203.0.113.51",
         "src_port": null,
         "dst_ip": "192.168.1.4",
         "dst_port": null,
@@ -1956,13 +1094,214 @@
       }
     },
     {
-      "delay_ms": 2239,
+      "delay_ms": 2122,
       "threat": {
-        "timestamp": "2026-10-12T19:44:27Z",
-        "src_ip": "198.51.100.69",
-        "src_port": 63238,
+        "timestamp": "2026-10-26T11:23:42Z",
+        "src_ip": "203.0.113.249",
+        "src_port": 65332,
         "dst_ip": "192.168.1.4",
-        "dst_port": 9620,
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 12,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 8688
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 2428.33
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2319
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1558,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:43Z",
+        "src_ip": "192.0.2.254",
+        "src_port": 54040,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 9,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 1918.8
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5840
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 1933.5
+          }
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1524,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:45Z",
+        "src_ip": "192.0.2.47",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2347,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:47Z",
+        "src_ip": "192.0.2.247",
+        "src_port": 60778,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.8333,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2336,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:49Z",
+        "src_ip": "198.51.100.226",
+        "src_port": 52513,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 7,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2053.76
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2320.2
+          },
+          {
+            "feature": "Packet Length Mean",
+            "value": 1452.62
+          }
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 809,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:50Z",
+        "src_ip": "203.0.113.81",
+        "src_port": 49553,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 13,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 10135
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 2705.04
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2321.4
+          }
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 977,
+      "threat": {
+        "timestamp": "2026-10-26T11:23:51Z",
+        "src_ip": "192.0.2.81",
+        "src_port": 49444,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
         "protocol": "TCP",
         "label": "SynFlood",
         "confidence": null,
@@ -1985,105 +1324,84 @@
       }
     },
     {
-      "delay_ms": 2321,
+      "delay_ms": 1336,
       "threat": {
-        "timestamp": "2026-10-12T19:44:29Z",
-        "src_ip": "198.51.100.5",
-        "src_port": 50381,
+        "timestamp": "2026-10-26T11:23:52Z",
+        "src_ip": "192.0.2.139",
+        "src_port": 61244,
         "dst_ip": "192.168.1.4",
-        "dst_port": 80,
+        "dst_port": 21,
         "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4725,
+        "label": "BruteForce",
+        "confidence": 1.0,
         "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2317.53
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2292
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
+        "action": "blocked",
+        "packet_count": 24,
+        "evidence": [],
         "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 2227,
+      "delay_ms": 761,
       "threat": {
-        "timestamp": "2026-10-12T19:44:32Z",
-        "src_ip": "198.51.100.21",
-        "src_port": 62992,
+        "timestamp": "2026-10-26T11:23:53Z",
+        "src_ip": "203.0.113.5",
+        "src_port": null,
         "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4825,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
         "evidence": [
           {
-            "feature": "Packet Length Std",
-            "value": 2340.99
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2315.6
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
+            "feature": "ICMP packets in 2 s",
+            "value": 101
           }
         ],
         "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 2141,
+      "delay_ms": 1950,
       "threat": {
-        "timestamp": "2026-10-12T19:44:34Z",
-        "src_ip": "198.51.100.168",
-        "src_port": 59647,
+        "timestamp": "2026-10-26T11:23:55Z",
+        "src_ip": "198.51.100.133",
+        "src_port": 63642,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
         "label": "DoS",
-        "confidence": 0.89,
+        "confidence": 1.0,
         "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 330,
+        "action": "blocked",
+        "packet_count": 14,
         "evidence": [
           {
             "feature": "Packet Length Std",
-            "value": 2338
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2324.4
+            "value": 2102.62
           },
           {
             "feature": "Bwd Packet Length Max",
-            "value": 5840
+            "value": 7240
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2319
           }
         ],
         "explanation": {
@@ -2096,97 +1414,60 @@
       }
     },
     {
-      "delay_ms": 2046,
+      "delay_ms": 1355,
       "threat": {
-        "timestamp": "2026-10-12T19:44:36Z",
-        "src_ip": "203.0.113.254",
-        "src_port": 60403,
+        "timestamp": "2026-10-26T11:23:56Z",
+        "src_ip": "203.0.113.221",
+        "src_port": null,
         "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4725,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2339.79
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2314.4
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 671,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:36Z",
-        "src_ip": "203.0.113.187",
-        "src_port": 64124,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 5398,
-        "protocol": "TCP",
-        "label": "PortScan",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
         "confidence": null,
         "trigger": "rule",
         "action": "blocked",
-        "packet_count": 21,
+        "packet_count": 101,
         "evidence": [
           {
-            "feature": "distinct ports in 5 s",
-            "value": 21
+            "feature": "ICMP packets in 2 s",
+            "value": 101
           }
         ],
         "explanation": {
           "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
           "source": "offline"
         }
       }
     },
     {
-      "delay_ms": 1768,
+      "delay_ms": 1662,
       "threat": {
-        "timestamp": "2026-10-12T19:44:38Z",
-        "src_ip": "203.0.113.20",
-        "src_port": 58940,
+        "timestamp": "2026-10-26T11:23:58Z",
+        "src_ip": "192.0.2.203",
+        "src_port": 56800,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
         "label": "DDoS",
-        "confidence": 0.4825,
+        "confidence": 1.0,
         "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 10,
+        "action": "blocked",
+        "packet_count": 13,
         "evidence": [
           {
             "feature": "Packet Length Std",
-            "value": 2320.3
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2294.8
+            "value": 1859.88
           },
           {
             "feature": "Bwd Packet Length Max",
             "value": 5840
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 1934.5
           }
         ],
         "explanation": {
@@ -2199,10 +1480,156 @@
       }
     },
     {
-      "delay_ms": 2421,
+      "delay_ms": 1754,
       "threat": {
-        "timestamp": "2026-10-12T19:44:41Z",
-        "src_ip": "192.0.2.250",
+        "timestamp": "2026-10-26T11:24:00Z",
+        "src_ip": "198.51.100.59",
+        "src_port": 58469,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 8,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 3350.63
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 10135
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 2321.4
+          }
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2108,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:02Z",
+        "src_ip": "203.0.113.246",
+        "src_port": 57983,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 14,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5792
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 1620.61
+          },
+          {
+            "feature": "Flow IAT Max",
+            "value": 101000000
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 689,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:03Z",
+        "src_ip": "198.51.100.148",
+        "src_port": 50908,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 5,
+        "evidence": [],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2291,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:05Z",
+        "src_ip": "203.0.113.131",
+        "src_port": 63542,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 0.775,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 4,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1137,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:06Z",
+        "src_ip": "192.0.2.13",
+        "src_port": 63424,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.8469,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 809,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:07Z",
+        "src_ip": "198.51.100.94",
         "src_port": 61440,
         "dst_ip": "192.168.1.4",
         "dst_port": 4033,
@@ -2228,265 +1655,11 @@
       }
     },
     {
-      "delay_ms": 2422,
+      "delay_ms": 2490,
       "threat": {
-        "timestamp": "2026-10-12T19:44:43Z",
-        "src_ip": "192.0.2.151",
-        "src_port": 57501,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4825,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 40,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2339.99
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2314.6
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1654,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:45Z",
-        "src_ip": "192.0.2.195",
-        "src_port": 60599,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.9175,
-        "trigger": "model",
-        "action": "blocked",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2335.46
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2323
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1080,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:46Z",
-        "src_ip": "198.51.100.96",
-        "src_port": 63895,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 21,
-        "protocol": "TCP",
-        "label": "BruteForce",
-        "confidence": 0.6552,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device made repeated login attempts against a service on this computer.",
-          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
-          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1159,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:47Z",
-        "src_ip": "192.0.2.245",
-        "src_port": 51407,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DDoS",
-        "confidence": 0.4725,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 50,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2336.59
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2311.2
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "CRITICAL",
-          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
-          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
-          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1633,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:49Z",
-        "src_ip": "192.0.2.218",
-        "src_port": 8080,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 55137,
-        "protocol": "TCP",
-        "label": "Botnet",
-        "confidence": 0.4998,
-        "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 8,
-        "evidence": [],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
-          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
-          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1155,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:50Z",
-        "src_ip": "203.0.113.197",
-        "src_port": 54906,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 80,
-        "protocol": "TCP",
-        "label": "DoS",
-        "confidence": 0.9825,
-        "trigger": "model",
-        "action": "blocked",
-        "packet_count": 10,
-        "evidence": [
-          {
-            "feature": "Packet Length Std",
-            "value": 2331.35
-          },
-          {
-            "feature": "Bwd Packet Length Mean",
-            "value": 2319.6
-          },
-          {
-            "feature": "Bwd Packet Length Max",
-            "value": 5840
-          }
-        ],
-        "explanation": {
-          "severity": "HIGH",
-          "summary": "A device sent traffic shaped to overload a service on this computer.",
-          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
-          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1816,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:52Z",
-        "src_ip": "192.0.2.150",
-        "src_port": 62789,
-        "dst_ip": "192.168.1.4",
-        "dst_port": 7617,
-        "protocol": "TCP",
-        "label": "PortScan",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 21,
-        "evidence": [
-          {
-            "feature": "distinct ports in 5 s",
-            "value": 21
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device tried to connect to many different ports on this computer in a short time.",
-          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
-          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 916,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:52Z",
-        "src_ip": "192.0.2.210",
-        "src_port": null,
-        "dst_ip": "192.168.1.4",
-        "dst_port": null,
-        "protocol": "ICMP",
-        "label": "IcmpFlood",
-        "confidence": null,
-        "trigger": "rule",
-        "action": "blocked",
-        "packet_count": 101,
-        "evidence": [
-          {
-            "feature": "ICMP packets in 2 s",
-            "value": 101
-          }
-        ],
-        "explanation": {
-          "severity": "MEDIUM",
-          "summary": "A device sent an unusually large number of ping messages to this computer.",
-          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
-          "recommendation": "Keep the source blocked while the flood continues.",
-          "source": "offline"
-        }
-      }
-    },
-    {
-      "delay_ms": 1977,
-      "threat": {
-        "timestamp": "2026-10-12T19:44:54Z",
-        "src_ip": "198.51.100.116",
-        "src_port": 58318,
+        "timestamp": "2026-10-26T11:24:09Z",
+        "src_ip": "203.0.113.183",
+        "src_port": 53875,
         "dst_ip": "192.168.1.4",
         "dst_port": 80,
         "protocol": "TCP",
@@ -2511,10 +1684,259 @@
       }
     },
     {
-      "delay_ms": 2023,
+      "delay_ms": 1657,
       "threat": {
-        "timestamp": "2026-10-12T19:44:56Z",
-        "src_ip": "192.0.2.76",
+        "timestamp": "2026-10-26T11:24:11Z",
+        "src_ip": "192.0.2.253",
+        "src_port": 64379,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.7031,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2342,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:13Z",
+        "src_ip": "192.0.2.58",
+        "src_port": 55099,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 12,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 1932.5
+          },
+          {
+            "feature": "Flow IAT Max",
+            "value": 99500000
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 1500.29
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1888,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:15Z",
+        "src_ip": "203.0.113.197",
+        "src_port": 59959,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 15,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5792
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 1568.07
+          },
+          {
+            "feature": "Flow IAT Max",
+            "value": 100000000
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 939,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:16Z",
+        "src_ip": "192.0.2.200",
+        "src_port": 63659,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 5,
+        "evidence": [],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2181,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:18Z",
+        "src_ip": "192.0.2.149",
+        "src_port": 65264,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 14,
+        "evidence": [
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 5792
+          },
+          {
+            "feature": "Packet Length Std",
+            "value": 1620.42
+          },
+          {
+            "feature": "Flow IAT Max",
+            "value": 99400000
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2365,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:21Z",
+        "src_ip": "192.0.2.237",
+        "src_port": 59231,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 13,
+        "evidence": [
+          {
+            "feature": "Packet Length Std",
+            "value": 2169.48
+          },
+          {
+            "feature": "Bwd Packet Length Max",
+            "value": 7240
+          },
+          {
+            "feature": "Bwd Packet Length Mean",
+            "value": 1932.5
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1638,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:22Z",
+        "src_ip": "192.0.2.188",
+        "src_port": 52610,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 0.8088,
+        "trigger": "model",
+        "action": "alert_only",
+        "packet_count": 6,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2407,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:25Z",
+        "src_ip": "198.51.100.148",
+        "src_port": 64124,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5398,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2460,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:27Z",
+        "src_ip": "192.0.2.166",
         "src_port": null,
         "dst_ip": "192.168.1.4",
         "dst_port": null,
@@ -2540,13 +1962,71 @@
       }
     },
     {
-      "delay_ms": 2016,
+      "delay_ms": 624,
       "threat": {
-        "timestamp": "2026-10-12T19:44:58Z",
-        "src_ip": "203.0.113.119",
-        "src_port": 50258,
+        "timestamp": "2026-10-26T11:24:28Z",
+        "src_ip": "192.0.2.3",
+        "src_port": null,
         "dst_ip": "192.168.1.4",
-        "dst_port": 4293,
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1289,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:29Z",
+        "src_ip": "198.51.100.207",
+        "src_port": 58352,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 0.7347,
+        "trigger": "both",
+        "action": "blocked",
+        "packet_count": 4,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 742,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:30Z",
+        "src_ip": "198.51.100.246",
+        "src_port": 52640,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 4224,
         "protocol": "TCP",
         "label": "PortScan",
         "confidence": null,
@@ -2569,25 +2049,377 @@
       }
     },
     {
-      "delay_ms": 1491,
+      "delay_ms": 1445,
       "threat": {
-        "timestamp": "2026-10-12T19:45:00Z",
-        "src_ip": "198.51.100.9",
-        "src_port": 55931,
+        "timestamp": "2026-10-26T11:24:31Z",
+        "src_ip": "192.0.2.223",
+        "src_port": 64029,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "DDoS",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 4,
+        "evidence": [],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1424,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:33Z",
+        "src_ip": "198.51.100.227",
+        "src_port": 60175,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 7,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1483,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:34Z",
+        "src_ip": "203.0.113.22",
+        "src_port": 55512,
         "dst_ip": "192.168.1.4",
         "dst_port": 21,
         "protocol": "TCP",
         "label": "BruteForce",
-        "confidence": 0.591,
+        "confidence": 1.0,
         "trigger": "model",
-        "action": "alert_only",
-        "packet_count": 30,
+        "action": "blocked",
+        "packet_count": 24,
         "evidence": [],
         "explanation": {
           "severity": "HIGH",
           "summary": "A device made repeated login attempts against a service on this computer.",
           "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
           "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 688,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:35Z",
+        "src_ip": "192.0.2.174",
+        "src_port": 60675,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 5036,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2053,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:37Z",
+        "src_ip": "198.51.100.169",
+        "src_port": 58140,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 24,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1710,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:39Z",
+        "src_ip": "198.51.100.137",
+        "src_port": null,
+        "dst_ip": "192.168.1.4",
+        "dst_port": null,
+        "protocol": "ICMP",
+        "label": "IcmpFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "ICMP packets in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2240,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:41Z",
+        "src_ip": "198.51.100.239",
+        "src_port": 51078,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 835,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:42Z",
+        "src_ip": "198.51.100.149",
+        "src_port": 57913,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 1550,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 2340,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:44Z",
+        "src_ip": "192.0.2.138",
+        "src_port": 52043,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 968,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:45Z",
+        "src_ip": "192.0.2.164",
+        "src_port": 57345,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 2799,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1045,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:46Z",
+        "src_ip": "203.0.113.138",
+        "src_port": 57060,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 21,
+        "protocol": "TCP",
+        "label": "BruteForce",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 3,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1786,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:48Z",
+        "src_ip": "198.51.100.91",
+        "src_port": 61020,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 8080,
+        "protocol": "TCP",
+        "label": "Botnet",
+        "confidence": 1.0,
+        "trigger": "model",
+        "action": "blocked",
+        "packet_count": 7,
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 860,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:49Z",
+        "src_ip": "198.51.100.151",
+        "src_port": 55128,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 80,
+        "protocol": "TCP",
+        "label": "SynFlood",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 101,
+        "evidence": [
+          {
+            "feature": "SYNs without ACK in 2 s",
+            "value": 101
+          }
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
+      }
+    },
+    {
+      "delay_ms": 1599,
+      "threat": {
+        "timestamp": "2026-10-26T11:24:50Z",
+        "src_ip": "198.51.100.154",
+        "src_port": 61832,
+        "dst_ip": "192.168.1.4",
+        "dst_port": 2393,
+        "protocol": "TCP",
+        "label": "PortScan",
+        "confidence": null,
+        "trigger": "rule",
+        "action": "blocked",
+        "packet_count": 21,
+        "evidence": [
+          {
+            "feature": "distinct ports in 5 s",
+            "value": 21
+          }
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
           "source": "offline"
         }
       }

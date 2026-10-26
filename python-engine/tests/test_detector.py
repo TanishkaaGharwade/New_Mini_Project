@@ -251,9 +251,26 @@ def test_flow_count_is_per_source_and_does_not_delay_rules():
 
 def test_model_only_low_confidence_is_alert_only():
     fw = FakeFirewall()
-    engine, records, _ = make_engine("DDoS", 0.6, firewall=fw)
+    engine, records, _ = make_engine("DDoS", 0.8, firewall=fw)       # reported, but below the block level
     engine.handle_flows(closed_flow(ATTACKER, ME))
     assert records[0]["action"] == "alert_only" and fw.calls == []
+
+
+@pytest.mark.parametrize("confidence,reported", [(0.69, False), (0.70, True), (0.40, False)])
+def test_model_verdicts_below_alert_confidence_are_ignored(confidence, reported):
+    engine, records, _ = make_engine("DoS", confidence)
+    engine.handle_flows(closed_flow(ATTACKER, ME))
+    assert bool(records) == reported
+    assert engine.stats.flows == 1 and engine.stats.attacks == int(reported)
+
+
+def test_weak_model_verdict_does_not_turn_a_rule_hit_into_both():
+    engine, records, clock = make_engine("DoS", 0.45)
+    engine.handle_flows(closed_flow(ATTACKER, ME))
+    clock.now += 6
+    engine.handle_rule_hit(port_scan_hit(t=2))
+    r, = records
+    assert (r["trigger"], r["label"], r["confidence"], r["action"]) == ("rule", "PortScan", None, "blocked")
 
 
 def test_rule_only_record():
@@ -266,13 +283,13 @@ def test_rule_only_record():
 
 
 def test_rule_then_model_gives_both():
-    engine, records, clock = make_engine("PortScan", 0.55)
+    engine, records, clock = make_engine("PortScan", 0.75)
     engine.handle_rule_hit(port_scan_hit())
     clock.now += 6                                                     # past the throttle window
     engine.handle_flows(closed_flow(ATTACKER, ME, t=1))
     assert [r["trigger"] for r in records] == ["rule", "both"]
     both = records[1]
-    assert both["action"] == "blocked" and both["confidence"] == 0.55   # rule fired: blocks at any confidence
+    assert both["action"] == "blocked" and both["confidence"] == 0.75   # rule fired: blocks below BLOCK_CONFIDENCE
     assert both["evidence"] == [{"feature": "distinct ports in 5 s", "value": 21},
                                 {"feature": "Flow Packets/s", "value": 2100.5}]
 

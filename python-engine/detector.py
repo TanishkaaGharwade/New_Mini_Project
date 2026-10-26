@@ -14,6 +14,11 @@ Decision table (section 6, step A11):
   no         | yes               | below              | model   | alert_only
   no         | no                | —                  | (no record)
 
+"Model says attack" means an attack class with confidence >= ALERT_CONFIDENCE. A
+less confident verdict is treated as normal traffic: no record, no attack count and
+no correlation with rules. Live traffic produces many such weak verdicts (ordinary
+HTTPS downloads labelled DoS at 40-65%), which would otherwise flood the dashboard.
+
 A "blocked" decision then goes through the overrides, in order:
   1. source whitelisted  → "whitelisted", not blocked
   2. DETECT_ONLY         → "detect_only", not blocked
@@ -35,7 +40,7 @@ from collections import deque
 from datetime import datetime, timezone
 
 from config import (
-    BLOCK_CONFIDENCE, DETECT_ONLY, CORRELATION_WINDOW, ALERT_THROTTLE_SECONDS,
+    BLOCK_CONFIDENCE, ALERT_CONFIDENCE, DETECT_ONLY, CORRELATION_WINDOW, ALERT_THROTTLE_SECONDS,
     MODEL_BLOCK_MIN_FLOWS,
 )
 from feature_extractor import feature_vector
@@ -58,6 +63,14 @@ def decide(rule_fired: bool, model_attack: bool, confidence: float | None,
             return TRIGGER_MODEL, BLOCKED
         return TRIGGER_MODEL, ALERT_ONLY
     return None
+
+
+def is_reportable(classifier, label: str, confidence: float | None,
+                  alert_confidence: float = ALERT_CONFIDENCE) -> bool:
+    """True when a model verdict counts as an attack: an attack class, confident enough."""
+    if not classifier.is_attack(label):
+        return False
+    return confidence is None or confidence >= alert_confidence
 
 
 def resolve_action(action: str, src_ip: str, *, detect_only: bool, is_whitelisted, block_ip) -> str:
@@ -173,6 +186,7 @@ class DetectionEngine:
 
     def __init__(self, classifier, sink, *, local_ips=(), stats: Stats | None = None,
                  detect_only: bool = DETECT_ONLY, block_confidence: float = BLOCK_CONFIDENCE,
+                 alert_confidence: float = ALERT_CONFIDENCE,
                  is_whitelisted=lambda ip: False, block_ip=lambda ip: "failed",
                  correlation_window: float = CORRELATION_WINDOW,
                  model_block_min_flows: int = MODEL_BLOCK_MIN_FLOWS,
@@ -183,6 +197,7 @@ class DetectionEngine:
         self.stats = stats or Stats()
         self.detect_only = detect_only
         self.block_confidence = block_confidence
+        self.alert_confidence = alert_confidence
         self.is_whitelisted = is_whitelisted
         self.block_ip = block_ip
         self.correlation_window = correlation_window
@@ -204,7 +219,7 @@ class DetectionEngine:
         emitted = []
         for flow, vector, (label, confidence) in zip(flows, vectors, verdicts):
             self.stats.flows += 1
-            if not self.classifier.is_attack(label):
+            if not is_reportable(self.classifier, label, confidence, self.alert_confidence):
                 continue
             self.stats.attacks += 1
 

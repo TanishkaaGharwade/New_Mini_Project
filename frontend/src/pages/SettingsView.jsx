@@ -93,7 +93,8 @@ export default function SettingsView({ stats }) {
         {/* Card 4: Prevention engine */}
         <Card title="Active Prevention Engine" icon={Shield} color="#ff4560">
           <Row label="Firewall system"      value="Windows advfirewall (netsh)" valueColor="#ff4560" />
-          <Row label="Block threshold"      value="≥ 90% confidence"            valueColor="#ffa500" />
+          <Row label="Alert threshold"      value="≥ 70% confidence"            valueColor="#ffa500" />
+          <Row label="Block threshold"      value="≥ 90% confidence, 3 flows"   valueColor="#ffa500" />
           <Row label="Rate rules"           value="SYN Flood, Port Scan, ICMP Flood" />
           <Row label="Never-block list"     value="127.0.0.1, gateway, cloud subnets" valueColor="#00e396" />
           <Row label="Data channel"         value="Firestore (cloud)"           />
@@ -107,7 +108,8 @@ export default function SettingsView({ stats }) {
       <div style={{ background: 'rgba(255,165,0,0.06)', border: '1px solid rgba(255,165,0,0.2)', borderRadius: 12, padding: 20 }}>
         <h3 style={{ fontSize: 14, fontWeight: 600, color: '#ffa500', marginBottom: 12 }}>Known Limitations</h3>
         <ul style={{ color: '#94a3b8', fontSize: 13, lineHeight: 1.8, paddingLeft: 18 }}>
-          <li>Botnet detection recall is 59.6% — some bots may be missed.</li>
+          <li>Botnet detection recall is 59.6% — some bots may be missed (lower still after the 70% alert threshold).</li>
+          <li>Model verdicts under 70% confidence are ignored to cut false alarms on normal traffic; rate rules still catch floods at any confidence.</li>
           <li>Web attacks, Infiltration and Heartbleed are not detected (too few training samples).</li>
           <li>Engine is Windows-only; Linux/macOS are not supported.</li>
           <li>Live mode requires the CyberSentinel engine running on the protected machine.</li>
