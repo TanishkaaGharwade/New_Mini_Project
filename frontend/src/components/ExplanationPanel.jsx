@@ -1,7 +1,5 @@
 /**
  * ExplanationPanel — slides in from the right to show a stored threat explanation.
- *
- * Replaces GeminiPanel.jsx. All "Gemini" wording removed.
  * Renders threat.explanation from Firestore (or the waiting/offline states).
  */
 import { Sparkles, X, Cpu, AlertTriangle, CheckCircle2, ShieldAlert, Zap } from 'lucide-react'

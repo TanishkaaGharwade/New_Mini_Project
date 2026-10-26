@@ -46,6 +46,13 @@ export function useFirestoreThreats() {
   const [engineOnline, setEngineOnline] = useState(false)
   const [error, setError]               = useState(null)
 
+  // The heartbeat only arrives while the engine runs, so a stopped engine sends
+  // nothing. Re-check its age on a timer, or the badge would stay "online" forever.
+  useEffect(() => {
+    const id = setInterval(() => setEngineOnline(checkOnline(stats.updated_at)), 30_000)
+    return () => clearInterval(id)
+  }, [stats.updated_at])
+
   useEffect(() => {
     if (!db) {
       setError('Firebase is not configured. Check your .env file.')
