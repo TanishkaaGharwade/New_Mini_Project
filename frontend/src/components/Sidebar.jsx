@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom'
 import { LayoutDashboard, ShieldAlert, Network, BrainCircuit, Settings, LogOut } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
   { icon: LayoutDashboard, label: 'Dashboard',   id: 'dashboard' },
@@ -8,11 +10,27 @@ const NAV_ITEMS = [
   { icon: Settings,        label: 'Settings',    id: 'settings'  },
 ]
 
-export default function Sidebar({ active = 'dashboard', onNav }) {
+export default function Sidebar({ active = 'dashboard', onNav, mode = 'live' }) {
+  const navigate = useNavigate()
+  const { signOut } = useAuth()
+  const isDemo = mode === 'demo'
+
+  // Demo: back to the landing page. Live: sign out, as the account bar does.
+  const handleExit = async () => {
+    if (isDemo) {
+      navigate('/')
+      return
+    }
+    await signOut()
+    navigate('/login', { replace: true })
+  }
+
   return (
     <aside style={{
       width: 220,
-      minHeight: 'calc(100vh - 64px)',
+      // Stays in view under the 64px navbar while the page scrolls
+      position: 'sticky', top: 64, alignSelf: 'flex-start',
+      height: 'calc(100vh - 64px)',
       background: 'rgba(9,15,30,0.95)',
       borderRight: '1px solid rgba(255,255,255,0.07)',
       display: 'flex', flexDirection: 'column',
@@ -49,8 +67,8 @@ export default function Sidebar({ active = 'dashboard', onNav }) {
         })}
       </nav>
 
-      {/* Logout */}
-      <button style={{
+      {/* Exit demo / sign out */}
+      <button onClick={handleExit} style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '11px 20px', border: 'none', borderLeft: '3px solid transparent',
         background: 'transparent', color: '#64748b', cursor: 'pointer',
@@ -60,7 +78,7 @@ export default function Sidebar({ active = 'dashboard', onNav }) {
         onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
       >
         <LogOut size={16} />
-        Logout
+        {isDemo ? 'Exit demo' : 'Sign out'}
       </button>
     </aside>
   )

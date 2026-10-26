@@ -39,11 +39,13 @@ export default function AIAnalystView({ threats = [], mode }) {
     },
   ])
   const [loading, setLoading] = useState(false)
-  const bottomRef = useRef(null)
+  const listRef = useRef(null)
 
+  // Scroll only the message list (scrollIntoView would also scroll the whole page)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    const list = listRef.current
+    if (list) list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' })
+  }, [messages, loading])
 
   const handleSend = async (e) => {
     e.preventDefault()
@@ -135,7 +137,7 @@ export default function AIAnalystView({ threats = [], mode }) {
         overflow: 'hidden',
       }}>
         {/* Messages */}
-        <div style={{ flex: 1, padding: 24, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div ref={listRef} style={{ flex: 1, padding: 24, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 16 }}>
           {messages.map((m, i) => (
             <div key={i} style={{
               display: 'flex', gap: 12,
@@ -174,7 +176,6 @@ export default function AIAnalystView({ threats = [], mode }) {
               </div>
             </div>
           )}
-          <div ref={bottomRef} />
         </div>
 
         {/* Input */}

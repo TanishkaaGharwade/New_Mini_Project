@@ -46,7 +46,8 @@ export default function ProtocolChart({ threats = [] }) {
       <h3 style={{ fontSize: 14, fontWeight: 600, color: '#94a3b8', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
         Protocol Distribution
       </h3>
-      <ResponsiveContainer width="100%" height={220}>
+      {/* debounce moves the resize out of the ResizeObserver callback, avoiding "ResizeObserver loop" errors */}
+      <ResponsiveContainer width="100%" height={220} debounce={50}>
         <PieChart>
           <Pie
             data={data}

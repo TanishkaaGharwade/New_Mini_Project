@@ -30,6 +30,10 @@ export default function DashboardPage({ dataHook }) {
   const { threats, stats, engineOnline, mode, requestUnblock, error } =
     dataHook?.() ?? { threats: [], stats: {}, engineOnline: false, mode: 'live', requestUnblock: null, error: null }
 
+  // Show the latest copy of the selected record, so an explanation the engine adds
+  // after the panel opened appears without reopening it
+  const shownThreat = (selectedThreat?.id && threats.find(t => t.id === selectedThreat.id)) || selectedThreat
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: 'var(--bg-base)' }}>
       <Navbar
@@ -38,30 +42,29 @@ export default function DashboardPage({ dataHook }) {
         mode={mode}
       />
 
-      {/* Demo banner */}
-      {mode === 'demo' && (
-        <div style={{
-          background: 'rgba(255,165,0,0.12)', borderBottom: '1px solid rgba(255,165,0,0.3)',
-          padding: '8px 24px', textAlign: 'center', color: '#ffa500', fontSize: 13, fontWeight: 600,
-        }}>
-          ⚠️ Simulated replay of recorded attack traffic. Not live data.
-        </div>
-      )}
-
-      {/* Firestore error banner */}
-      {error && (
-        <div style={{
-          background: 'rgba(255,69,96,0.10)', borderBottom: '1px solid rgba(255,69,96,0.3)',
-          padding: '8px 24px', textAlign: 'center', color: '#ff4560', fontSize: 13,
-        }}>
-          {error}
-        </div>
-      )}
-
       <div style={{ display: 'flex', flex: 1 }}>
-        <Sidebar active={activeNav} onNav={setActiveNav} />
+        <Sidebar active={activeNav} onNav={setActiveNav} mode={mode} />
 
-        <main style={{ flex: 1, padding: '24px', overflowY: 'auto' }}>
+        <main style={{ flex: 1, minWidth: 0, padding: '24px' }}>
+          {/* Demo banner */}
+          {mode === 'demo' && (
+            <div style={{
+              background: 'rgba(255,165,0,0.12)', border: '1px solid rgba(255,165,0,0.3)',
+              padding: '8px 24px', borderRadius: 8, marginBottom: 16, textAlign: 'center', color: '#ffa500', fontSize: 13, fontWeight: 600,
+            }}>
+              ⚠️ Simulated replay of recorded attack traffic. Not live data.
+            </div>
+          )}
+
+          {/* Firestore error banner */}
+          {error && (
+            <div style={{
+              background: 'rgba(255,69,96,0.10)', border: '1px solid rgba(255,69,96,0.3)',
+              padding: '8px 24px', borderRadius: 8, marginBottom: 16, textAlign: 'center', color: '#ff4560', fontSize: 13,
+            }}>
+              {error}
+            </div>
+          )}
 
           {activeNav === 'dashboard' && (
             <>
@@ -111,9 +114,9 @@ export default function DashboardPage({ dataHook }) {
             <SettingsView stats={stats} />
           )}
 
-          {selectedThreat && (
+          {shownThreat && (
             <ExplanationPanel
-              threat={selectedThreat}
+              threat={shownThreat}
               onClose={() => setSelectedThreat(null)}
             />
           )}

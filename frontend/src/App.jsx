@@ -31,28 +31,28 @@ function SignedInLayout() {
  *  /app/audit   → AuditLogPage (admin)
  */
 export default function App() {
+  // The landing page and demo need no Firebase settings, so only the login and
+  // signed-in pages sit behind ConfigGate
   return (
     <BrowserRouter>
-      <ConfigGate>
-        <AuthProvider>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/demo" element={<DashboardPage dataHook={useDemoReplay} />} />
-            <Route path="/login" element={<LoginPage />} />
+      <AuthProvider>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/demo" element={<DashboardPage dataHook={useDemoReplay} />} />
+          <Route path="/login" element={<ConfigGate><LoginPage /></ConfigGate>} />
 
-            {/* Protected routes */}
-            <Route path="/app" element={<SignedInLayout />}>
-              <Route index element={<DashboardPage dataHook={useFirestoreThreats} />} />
-              <Route path="users" element={<AdminRoute><UsersPage /></AdminRoute>} />
-              <Route path="audit" element={<AdminRoute><AuditLogPage /></AdminRoute>} />
-            </Route>
+          {/* Protected routes */}
+          <Route path="/app" element={<ConfigGate><SignedInLayout /></ConfigGate>}>
+            <Route index element={<DashboardPage dataHook={useFirestoreThreats} />} />
+            <Route path="users" element={<AdminRoute><UsersPage /></AdminRoute>} />
+            <Route path="audit" element={<AdminRoute><AuditLogPage /></AdminRoute>} />
+          </Route>
 
-            {/* Fallback → landing */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AuthProvider>
-      </ConfigGate>
+          {/* Fallback → landing */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

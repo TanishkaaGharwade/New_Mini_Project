@@ -43,6 +43,7 @@ from classifier import ThreatClassifier
 from detector import AlertThrottle, DetectionEngine, decide, make_threat, resolve_action
 from feature_extractor import FlowTracker, PacketInfo
 from rules import RuleEngine
+from ai import offline_explanation
 
 DEFAULT_DATA_DIR = os.path.join(REPO_ROOT, "training", "data", "MachineLearningCVE")
 VICTIM = "192.168.1.4"
@@ -382,13 +383,18 @@ def balance(records: list, count: int, rng: random.Random) -> list:
 
 
 def build_export(records: list, rng: random.Random, start: datetime) -> dict:
-    """Wrap records in the replay format, re-timing them along one demo timeline."""
+    """Wrap records in the replay format, re-timing them along one demo timeline.
+
+    Each record gets the offline explanation for its label (ai.offline_explanation).
+    """
     events = []
     t = start.timestamp()
     for record in records:
         delay_ms = rng.randint(600, 2500)
         t += delay_ms / 1000
-        events.append({"delay_ms": delay_ms, "threat": {**record, "timestamp": _iso(t)}})
+        # The demo has no engine to generate explanations later, so ship the offline one
+        threat = {**record, "timestamp": _iso(t), "explanation": offline_explanation(record["label"])}
+        events.append({"delay_ms": delay_ms, "threat": threat})
     return {
         "model_version": ACTIVE_MODEL,
         "generated_at": _iso(start.timestamp()),

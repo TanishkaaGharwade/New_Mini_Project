@@ -63,6 +63,9 @@ export function useDemoReplay({ speed = 1 } = {}) {
     if (events.length === 0) return
 
     const modelVersion = dataRef.current.model_version ?? 'v1'
+    let cycle = 0
+    // "IPs Blocked" counts distinct addresses, like the engine's stats, not blocked records
+    const blockedIps = new Set()
 
     function scheduleNext() {
       const idx = indexRef.current % events.length
@@ -70,33 +73,39 @@ export function useDemoReplay({ speed = 1 } = {}) {
       const delayMs = Math.max(0, (event.delay_ms ?? 1000) / speedRef.current)
 
       timerRef.current = setTimeout(() => {
-        const threat = event.threat ?? event  // support both formats
+        // Start of a new loop: clear the previous run so counters restart from zero.
+        // Done here rather than right after the last event, so that event stays visible.
+        if (idx === 0 && cycle > 0) {
+          blockedIps.clear()
+          setThreats([])
+          setStats({ ...INITIAL_STATS, model_version: modelVersion })
+        }
 
-        setThreats(prev => {
-          // keep newest 100
-          const next = [threat, ...prev].slice(0, 100)
-          return next
-        })
+        // Unique id per playback, used as the table row key
+        const threat = { id: `demo-${cycle}-${idx}`, ...(event.threat ?? event) }
+
+        // keep newest 100
+        setThreats(prev => [threat, ...prev].slice(0, 100))
+
+        if (threat.action === 'blocked' && threat.src_ip) blockedIps.add(threat.src_ip)
+        const blockedCount = blockedIps.size
 
         setStats(prev => {
-          const isBlocked = threat.action === 'blocked'
           return {
             ...prev,
             model_version: modelVersion,
             total_flows:   prev.total_flows + 1,
             total_attacks: prev.total_attacks + 1,
-            blocked_ips:   isBlocked ? prev.blocked_ips + 1 : prev.blocked_ips,
+            blocked_ips:   blockedCount,
             total_packets: prev.total_packets + (threat.packet_count ?? 1),
             updated_at:    new Date().toISOString(),
           }
         })
 
         indexRef.current = idx + 1
-        // Reset threats display on loop
         if (indexRef.current >= events.length) {
           indexRef.current = 0
-          setThreats([])
-          setStats({ ...INITIAL_STATS, model_version: modelVersion })
+          cycle += 1
         }
 
         scheduleNext()

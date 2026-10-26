@@ -1,4 +1,4 @@
-import { Network, Maximize2, RefreshCw } from 'lucide-react'
+import { Network } from 'lucide-react'
 import TopologyGraph from '../components/TopologyGraph'
 
 export default function TopologyView({ threats = [] }) {
@@ -17,13 +17,13 @@ export default function TopologyView({ threats = [] }) {
           </p>
         </div>
         <div style={{ color: '#00d4ff', fontSize: 12, fontWeight: 600, fontFamily: 'monospace' }}>
-          {activeNodes} Active Host Nodes Connected
+          {activeNodes} attacking source{activeNodes !== 1 ? 's' : ''}
         </div>
       </div>
 
       {/* Full-screen Topology Container */}
       <div style={{ flex: 1, minHeight: 0 }}>
-        <TopologyGraph threats={threats} />
+        <TopologyGraph threats={threats} height="100%" />
       </div>
     </div>
   )

@@ -29,7 +29,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -46,7 +53,14 @@
         "trigger": "model",
         "action": "blocked",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -63,7 +77,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -93,7 +114,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -123,7 +151,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -153,7 +188,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -175,7 +217,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -197,7 +246,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -219,7 +275,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -241,7 +304,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -271,7 +341,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -293,7 +370,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -323,7 +407,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -345,7 +436,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -367,7 +465,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -389,7 +494,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -411,7 +523,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -433,7 +552,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -463,7 +589,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -485,7 +618,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -515,7 +655,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -537,7 +684,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -559,7 +713,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -581,7 +742,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -611,7 +779,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -641,7 +816,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -671,7 +853,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -701,7 +890,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -718,7 +914,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -740,7 +943,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -770,7 +980,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -800,7 +1017,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -817,7 +1041,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -839,7 +1070,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -861,7 +1099,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -883,7 +1128,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -905,7 +1157,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -922,7 +1181,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -952,7 +1218,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -969,7 +1242,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -999,7 +1279,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1021,7 +1308,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1043,7 +1337,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1073,7 +1374,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1095,7 +1403,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1112,7 +1427,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1129,7 +1451,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1159,7 +1488,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1181,7 +1517,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1203,7 +1546,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1220,7 +1570,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1242,7 +1599,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1264,7 +1628,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1286,7 +1657,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1308,7 +1686,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1330,7 +1715,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1360,7 +1752,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1382,7 +1781,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1404,7 +1810,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1426,7 +1839,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1443,7 +1863,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1465,7 +1892,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1482,7 +1916,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1504,7 +1945,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1526,7 +1974,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1556,7 +2011,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1586,7 +2048,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1616,7 +2085,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1646,7 +2122,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1668,7 +2151,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1698,7 +2188,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1720,7 +2217,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1750,7 +2254,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1780,7 +2291,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1797,7 +2315,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1827,7 +2352,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "CRITICAL",
+          "summary": "Traffic matching a distributed denial-of-service attack reached this computer.",
+          "mechanism": "Many machines send requests at the same time to exhaust the target. Blocking one source helps only a little, because others keep sending.",
+          "recommendation": "Block the sources seen here and watch for more. A large attack needs filtering by the network provider.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1844,7 +2376,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 8,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "Traffic resembling an infected machine talking to its controller was seen.",
+          "mechanism": "Malware on a compromised computer regularly contacts a control server for instructions. The pattern of those short, repeated connections is what was recognised.",
+          "recommendation": "Treat this as uncertain: this detection has more false alarms than the others. Run a malware scan on the device involved.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1874,7 +2413,14 @@
             "feature": "Bwd Packet Length Max",
             "value": 5840
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent traffic shaped to overload a service on this computer.",
+          "mechanism": "Denial-of-service tools open many connections or send requests that are slow or expensive to answer, so the service is too busy to respond to real users.",
+          "recommendation": "Keep the source blocked and check that the targeted service is still responding.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1896,7 +2442,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1918,7 +2471,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1940,7 +2500,14 @@
             "feature": "SYNs without ACK in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device sent a very large number of connection requests without completing any of them.",
+          "mechanism": "Each half-open request makes the computer reserve memory while it waits for a reply that never comes. Enough of them leave no room for real visitors.",
+          "recommendation": "Keep the source blocked. If the address is one of your own devices, check it for malware.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1962,7 +2529,14 @@
             "feature": "ICMP packets in 2 s",
             "value": 101
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device sent an unusually large number of ping messages to this computer.",
+          "mechanism": "Answering each ping uses a little network capacity and processing time. A flood of them can slow the connection down for everything else.",
+          "recommendation": "Keep the source blocked while the flood continues.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -1984,7 +2558,14 @@
             "feature": "distinct ports in 5 s",
             "value": 21
           }
-        ]
+        ],
+        "explanation": {
+          "severity": "MEDIUM",
+          "summary": "A device tried to connect to many different ports on this computer in a short time.",
+          "mechanism": "Attackers scan ports to find out which services are running, the way a burglar tries every door and window. The scan does no damage itself, but it usually comes before an attack.",
+          "recommendation": "Check whether you recognise the source address. Close or firewall any service you do not need.",
+          "source": "offline"
+        }
       }
     },
     {
@@ -2001,7 +2582,14 @@
         "trigger": "model",
         "action": "alert_only",
         "packet_count": 30,
-        "evidence": []
+        "evidence": [],
+        "explanation": {
+          "severity": "HIGH",
+          "summary": "A device made repeated login attempts against a service on this computer.",
+          "mechanism": "Automated tools try many username and password combinations, hoping one is weak or reused.",
+          "recommendation": "Keep the source blocked. Use strong, unique passwords and turn off remote login services you do not use.",
+          "source": "offline"
+        }
       }
     }
   ]
