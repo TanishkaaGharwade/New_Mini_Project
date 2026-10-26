@@ -15,12 +15,15 @@ Wires together:
   sinks.handle_detection()  (print + SSE + Firestore + explanation)
 
 Run as Administrator:
-    python main.py
+    python main.py                 # mode from config.DETECT_ONLY (detect-only by default)
+    python main.py --block         # really block attackers with Windows Firewall
+    python main.py --detect-only   # never touch the firewall
 
 Optional env vars:
     NET_INTERFACE=Wi-Fi     (default: auto-detect)
 """
 
+import argparse
 import logging
 import os
 import queue
@@ -150,7 +153,19 @@ def detection_worker(engine: DetectionEngine, tracker: FlowTracker) -> None:
         run_batch()
 
 
-def main() -> None:
+def parse_args(argv=None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="CyberSentinel detection and prevention engine (run as Administrator)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--block", dest="detect_only", action="store_false",
+                      help="block attackers with Windows Firewall rules")
+    mode.add_argument("--detect-only", dest="detect_only", action="store_true",
+                      help="detect and report only; never touch the firewall")
+    parser.set_defaults(detect_only=DETECT_ONLY)
+    return parser.parse_args(argv)
+
+
+def main(argv=None) -> None:
+    detect_only = parse_args(argv).detect_only
     print("=" * 60)
     print("  CyberSentinel — ML-Based Intrusion Prevention System")
     print("=" * 60)
@@ -167,18 +182,18 @@ def main() -> None:
     local_ips = netinfo.local_ips()
     blocker.init_whitelist()
     blocker.load_existing_rules()
-    mode = "DETECT-ONLY (firewall untouched)" if DETECT_ONLY else f"BLOCKING (model confidence >= {BLOCK_CONFIDENCE})"
+    mode = "DETECT-ONLY (firewall untouched)" if detect_only else f"BLOCKING (model confidence >= {BLOCK_CONFIDENCE})"
     logger.info(f"[MAIN] Mode: {mode}")
 
     stats = Stats(blocked_ips=blocker.get_blocked_ips)
     sinks.set_stats_provider(stats.snapshot)
     start_sse_server(host=SSE_HOST, port=SSE_PORT)
-    sinks.start_cloud(unblock=blocker.unblock_ip)
+    sinks.start_cloud(unblock=blocker.unblock_ip, detect_only=detect_only)
 
     engine = DetectionEngine(
         classifier, sinks.handle_detection,
         local_ips=local_ips, stats=stats,
-        detect_only=DETECT_ONLY, block_confidence=BLOCK_CONFIDENCE,
+        detect_only=detect_only, block_confidence=BLOCK_CONFIDENCE,
         is_whitelisted=blocker.is_whitelisted, block_ip=blocker.block_ip,
     )
     tracker = FlowTracker()

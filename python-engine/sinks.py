@@ -23,13 +23,14 @@ _cloud = None        # firebase_client.CloudStore, or None when Firestore is una
 _explainer = None    # ai.Explainer, or None
 
 
-def start_cloud(unblock) -> None:
+def start_cloud(unblock, detect_only: bool | None = None) -> None:
     """Connect to Firestore and start the explanation worker. Safe to call without a key file."""
     global _cloud, _explainer
     import ai
     import firebase_client
 
-    _cloud = firebase_client.connect(unblock=unblock)
+    kwargs = {} if detect_only is None else {"detect_only": detect_only}
+    _cloud = firebase_client.connect(unblock=unblock, **kwargs)
     if _cloud is None:
         return
     _cloud.start()

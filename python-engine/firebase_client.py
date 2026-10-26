@@ -245,7 +245,7 @@ class CloudStore:
         return finish(DONE, f"Firewall rule for {ip} removed", email, ip)
 
 
-def connect(unblock=lambda ip: False) -> CloudStore | None:
+def connect(unblock=lambda ip: False, detect_only: bool = DETECT_ONLY) -> CloudStore | None:
     """
     Open Firestore with the service-account key. Returns None, after logging why,
     when the key is missing or the SDK cannot start; the engine then runs without the cloud.
@@ -261,7 +261,7 @@ def connect(unblock=lambda ip: False) -> CloudStore | None:
         if not firebase_admin._apps:
             firebase_admin.initialize_app(credentials.Certificate(FIREBASE_CRED))
         store = CloudStore(
-            firestore.client(), unblock=unblock,
+            firestore.client(), unblock=unblock, detect_only=detect_only,
             server_timestamp=firestore.SERVER_TIMESTAMP,
             pending_filter=FieldFilter("status", "==", PENDING),
         )
