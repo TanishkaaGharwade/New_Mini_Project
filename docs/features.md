@@ -48,7 +48,7 @@
 
 | Component | File | Description |
 |---|---|---|
-| **BPF-filtered capture** | `sniffer.py` | Scapy + Npcap captures only IPv4 TCP/UDP/ICMP packets where the local machine is source or destination, keeping the pipeline narrow. Falls back to Scapy's Layer-3 raw socket when Npcap is absent. |
+| **BPF-filtered capture** | `sniffer.py` | Scapy + Npcap captures IPv4 TCP/UDP/ICMP packets (BPF filter `ip and (tcp or udp or icmp)`); packets that are neither to nor from the local machine are then dropped in Python, keeping the pipeline narrow. Falls back to Scapy's Layer-3 raw socket when Npcap is absent. |
 | **Packet parser** | `feature_extractor.py` | `parse_packet()` extracts headers, flags (SYN/ACK/FIN/RST), and the exact payload length calculation used by the CICIDS2017 dataset (including short-frame Ethernet padding) into a lightweight frozen `PacketInfo` dataclass. |
 | **Bi-directional flow tracker** | `feature_extractor.py` | `FlowTracker` aggregates packets from both ends of a connection into a `Flow` object using a symmetric key. Closes flows on TCP FIN/RST, after an idle timeout, after a maximum duration, or by evicting the oldest flow when the table is full. |
 | **19-feature CICIDS2017 vector** | `feature_extractor.py` | `build_features()` computes the 19 statistical flow features the model was trained on: duration, packet counts, byte totals, max/mean payload lengths, flow bytes/s, packets/s, inter-arrival time statistics, forward/backward IAT means, and down/up ratio. |
@@ -60,10 +60,10 @@
 
 | Component | File | Description |
 |---|---|---|
-| **Random Forest classifier** | `classifier.py` | `ThreatClassifier` wraps `model_v1.pkl` — a scikit-learn `Pipeline` (scaler + 100-tree Random Forest, max depth 20) trained on 923,394 CICIDS2017 flows. |
+| **Random Forest classifier** | `classifier.py` | `ThreatClassifier` wraps `model_v1.pkl` — a scikit-learn `Pipeline` (scaler + 100-tree Random Forest, max depth 20) trained on 738,715 CICIDS2017 flows (923,394 flows in total, 80/20 train/test split). |
 | **Detected attack classes** | — | **DoS**, **DDoS**, **PortScan**, **BruteForce**, **Botnet** (plus a Benign class). |
 | **Per-class confidence scores** | `classifier.py` | `predict_proba` gives a probability for each class; the max probability is used as the confidence for the decision table. |
-| **Feature importance evidence** | `classifier.py` | The top-N features with the highest per-tree importance are attached to each detection as structured evidence for the dashboard and the AI explanation. |
+| **Detection evidence** | `classifier.py` | Up to 3 features whose values are furthest above their normal level (the 99th percentile of benign traffic) are attached to each detection as structured evidence for the dashboard and the AI explanation. |
 | **Batch classification** | `main.py` | Flows are classified in batches for throughput; results are still processed in arrival order with rule hits interleaved. |
 | **Model versioning** | `config.py` | `ACTIVE_MODEL` selects the `.pkl` and `.meta.json` files; swapping the model requires only a config change. |
 | **Test accuracy** | — | 99.56% on 184,679 held-out CICIDS2017 test flows; macro F1 0.947. |
@@ -89,7 +89,7 @@ Rules fire immediately (no flow needs to close first), have a per-source cooldow
 | Feature | File | Description |
 |---|---|---|
 | **Decision table** | `detector.py` | Combines rule hits and model verdicts for the same remote IP within a correlation window (`CORRELATION_WINDOW`). Trigger is `rule`, `model`, or `both`; action is `blocked`, `alert_only`, `detect_only`, or `whitelisted`. |
-| **Confidence thresholds** | `config.py` | Verdicts below `ALERT_CONFIDENCE` (70%) are silently ignored; verdicts at or above `BLOCK_CONFIDENCE` (90%) trigger a block after `MODEL_BLOCK_MIN_FLOWS` consecutive attack flows in the window. |
+| **Confidence thresholds** | `config.py` | Verdicts below `ALERT_CONFIDENCE` (70%) are silently ignored; verdicts at or above `BLOCK_CONFIDENCE` (90%) trigger a block once `MODEL_BLOCK_MIN_FLOWS` (3) attack flows from the same source arrive within `CORRELATION_WINDOW` (10 s). |
 | **Alert throttling** | `detector.py` | At most one record per (IP, label) pair every `ALERT_THROTTLE_SECONDS`. Held-back packets counts are accumulated and merged into the next emitted record. |
 | **IP whitelist** | `blocker.py` | The local machine, default gateway, DNS servers, loopback, multicast, and configurable CIDR ranges are never blocked, even if the model/rules fire. |
 | **Detect-only mode** | `main.py` | `--detect-only` flag: detections are recorded and reported, but the firewall is never touched. Default mode for first-time users. |
@@ -145,16 +145,22 @@ Built with **React 19 + TypeScript + Vite + Tailwind CSS + React Router**.
 | `/demo` | No | Public demo: 84 real detections from `replay.json` played back in the browser at a fast-forward speed |
 | `/login` | — | Firebase email/password authentication |
 | `/app` (Dashboard) | Yes | Live counters (packets, flows, attacks, blocked IPs), protocol doughnut chart, interactive attack graph (Vis-Network), time-filtered threat log |
-| `/app/threats` | Yes | Filterable, sortable threat log with per-row **Explain** button showing severity, summary, mechanism, recommendation |
-| `/app/topology` | Yes | Full-screen interactive network graph of attacker → target edges |
-| `/app/ai` | Yes | AI Analyst chat tab powered by the Groq API via `/api/chat` |
-| `/app/settings` | Yes | Model facts, confidence thresholds, known limitations |
 | `/app/users` | Admin | User management: add, promote/demote, delete |
 | `/app/audit` | Admin | Immutable audit log of blocks and unblocks |
 
+Inside `/app` (and `/demo`) the sidebar switches between these tabs, which share the same address:
+
+| Tab | Description |
+|---|---|
+| **Dashboard** | The overview described above |
+| **Threats** | Threat log with search (IP or label) and filters (label, action), and a per-row **Explain** button showing severity, summary, mechanism, recommendation |
+| **Topology** | Full-screen interactive network graph of attacker → target edges |
+| **AI Analyst** | Chat powered by the Groq API via `/api/chat` (signed-in users only) |
+| **Settings** | Engine status, model facts, confidence thresholds, known limitations |
+
 **Time-range filter:** last hour / 24 hours (default) / 7 days / all time.
 
-**SSE stream:** the engine exposes a Server-Sent Events endpoint (`server.py`, `SSE_PORT`) that the dashboard also listens to for sub-second local updates.
+**Data source:** the dashboard reads everything from Firestore in real time. The engine also starts a local Server-Sent Events endpoint (`server.py`, `SSE_PORT` 5000), but the current dashboard does not use it.
 
 ---
 
@@ -181,8 +187,8 @@ Every block and unblock action is written to `audit/{id}` with: UTC timestamp, a
 | Tool | File | Purpose |
 |---|---|---|
 | **One-laptop simulator** | `simulate_attack.py` | Generates port scan, SYN flood, and ICMP flood packets from reserved documentation addresses (198.51.100.x) so the engine can be demonstrated without a second machine |
-| **Two-machine simulator** | `simulate_attack.py` | `--target <ip>` targets a real IP on the same network, causing the engine to block the attacker's real address |
-| **Offline replay** | `replay.py` | Feeds a recorded detection JSON file through the real model and rule engine, re-producing detections without live network traffic; exports `public/demo/replay.json` for the browser demo |
+| **Two-machine simulator** | `simulate_attack.py` | `--target <ip>` attacks another PC on the same network from this machine's real address; the engine on that PC detects it, and blocks the address when started with `--block` |
+| **Offline replay** | `replay.py` | Runs CICIDS2017 dataset rows (or scripted attack packets when the CSVs are absent) through the real model, rules and decision logic, producing detections without live traffic, Administrator rights or the firewall; exports `public/demo/replay.json` for the browser demo |
 
 ---
 
@@ -199,7 +205,8 @@ The `python-engine/tests/` directory contains a full **pytest** suite:
 | `test_blocker.py` | Whitelist logic, firewall command construction, duplicate detection |
 | `test_ai.py` | Groq API calls, offline fallback, rate limiting, explanation validation |
 | `test_firebase_client.py` | CloudStore writes, command handling, unblock flow (against `fake_firestore.py`) |
-| `test_main.py` | Full-pipeline integration smoke tests |
+| `test_sinks.py` | Detection hand-off: local SSE payload, Firestore storage, explanation requests, audit of blocks |
+| `test_main.py` | The `--block` / `--detect-only` start-up options |
 
 ---
 
@@ -236,7 +243,7 @@ The `python-engine/tests/` directory contains a full **pytest** suite:
 **Approach:**
 - Retrain on **CIC-IDS-2018** or **UNSW-NB15**, which include HTTP-level and encryption-aware attack classes.
 - Add **HTTP payload features** (URL length, number of parameters, header anomalies) extracted via deep-packet inspection (see §3.2) when traffic is unencrypted.
-- Include **TCP window size** and **flag-sequence** features (flag counts per flow) that the experiment log shows improve Botnet recall significantly (macro-F1 jumps from 0.947 to 0.986).
+- Revisit **TCP initial window size**. In the training log (entry 4) it raised Botnet recall from 0.60 to 0.91 (macro F1 0.947 → 0.983, 0.986 with destination port), but it was left out on purpose: each attack class has only two or three window values, which belong to the lab's attacker machines and would not carry over to another network. It is only worth adding with training data from many different networks. (TCP flag counts were also tested and added nothing.)
 
 **Technology:** scikit-learn (incremental retraining), XGBoost or LightGBM for faster inference, ONNX for model portability.
 
@@ -376,9 +383,9 @@ The `python-engine/tests/` directory contains a full **pytest** suite:
 
 ### 3.12 LLM-Powered Security Analyst Chat
 
-The AI Analyst tab already exists but is limited to a generic chat prompt. Enhancements:
+The AI Analyst tab already exists. Each question is sent with a summary of the detections on screen (counts by label and action, top 5 source IPs, the 10 latest detections). Enhancements:
 
-- **Retrieval-Augmented Generation (RAG):** embed recent threat records from Firestore into the context window so the model can answer questions like "Why was this IP blocked three times today?"
+- **Retrieval-Augmented Generation (RAG):** look up the full history of the IPs and attacks a question mentions, beyond the on-screen summary, so the model can answer questions like "Why was this IP blocked three times this month?"
 - **Threat summarisation:** a scheduled Cloud Function generates a daily digest ("You had 47 attacks today; 30 were port scans from 12 distinct IPs…") delivered by email or push notification.
 - **Fine-tuned model:** fine-tune a small open-source LLM (Llama 3, Mistral) on CyberSentinel alert data for lower latency and offline operation.
 
