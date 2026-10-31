@@ -231,7 +231,7 @@ python -m pytest -q
 
 ## Known limitations
 
-- Botnet recall is about 60% (57% after the 70% alert threshold).
+- Botnet recall is about 60% (50% after the 70% alert threshold, measured on the test set).
 - Web attacks (SQL injection, XSS), Infiltration and Heartbleed are not detected.
 - Scores come from the CICIDS2017 lab network; real traffic produces some false alarms,
   which the 70% threshold reduces.

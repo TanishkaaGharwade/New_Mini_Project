@@ -60,7 +60,7 @@
 
 | Component | File | Description |
 |---|---|---|
-| **Random Forest classifier** | `classifier.py` | `ThreatClassifier` wraps `model_v1.pkl` — a scikit-learn `Pipeline` (scaler + 100-tree Random Forest, max depth 20) trained on 738,715 CICIDS2017 flows (923,394 flows in total, 80/20 train/test split). |
+| **Random Forest classifier** | `classifier.py` | `ThreatClassifier` wraps `model_v1.pkl` — a scikit-learn `Pipeline` (median imputer + 100-tree Random Forest, max depth 20) trained on 738,715 CICIDS2017 flows (923,394 flows in total, 80/20 train/test split). |
 | **Detected attack classes** | — | **DoS**, **DDoS**, **PortScan**, **BruteForce**, **Botnet** (plus a Benign class). |
 | **Per-class confidence scores** | `classifier.py` | `predict_proba` gives a probability for each class; the max probability is used as the confidence for the decision table. |
 | **Detection evidence** | `classifier.py` | Up to 3 features whose values are furthest above their normal level (the 99th percentile of benign traffic) are attached to each detection as structured evidence for the dashboard and the AI explanation. |
@@ -145,7 +145,7 @@ Built with **React 19 + TypeScript + Vite + Tailwind CSS + React Router**.
 | `/demo` | No | Public demo: 84 real detections from `replay.json` played back in the browser at a fast-forward speed |
 | `/login` | — | Firebase email/password authentication |
 | `/app` (Dashboard) | Yes | Live counters (packets, flows, attacks, blocked IPs), protocol doughnut chart, interactive attack graph (Vis-Network), time-filtered threat log |
-| `/app/users` | Admin | User management: add, promote/demote, delete |
+| `/app/users` | Admin | Lists users and changes their role (admin or viewer); accounts are added and deleted with `tools/manage_users.py` |
 | `/app/audit` | Admin | Immutable audit log of blocks and unblocks |
 
 Inside `/app` (and `/demo`) the sidebar switches between these tabs, which share the same address:
