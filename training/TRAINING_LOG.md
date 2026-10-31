@@ -30,6 +30,9 @@ This is the chronological record of every training, retraining and test run for 
 | 10 | 2026-10-12 | Load check in a second environment | Loads correctly |
 | 11 | 2026-10-13 | Synthetic test of the new engine (Part A) | Benign traffic stays benign; attacks are caught by rules only, and the model misses port scans because of a dataset artifact |
 | 12 | 2026-10-13 | Length-convention fix in the engine, plus a blocking safeguard | Model detects 300 of 300 scan probes (was 0); no retraining needed |
+| 13 | 2026-10-23, 2026-10-26 | Live run on one laptop | Real capture, rule detection, firewall block and remote unblock all work; attacker simulated on the same laptop |
+| 14 | 2026-10-26, 2026-10-29 | Alert threshold of 0.70 | Benign false alarms 0.247% → 0.161%; test attacks reported 99.35% → 99.14%; Botnet 59.6% → 50.4% |
+| 15 | 2026-10-29 | Scripts that re-run the reported numbers | Test set, unseen benign set and port-scan fix all reproduce exactly |
 
 ---
 
@@ -616,10 +619,87 @@ Engine unit tests after both changes: 113 passed (104 before; 9 added).
 
 ---
 
+## Entry 13 — Live run on one laptop
+
+**Dates:** 2026-10-23 and 2026-10-26
+**What:** the engine run for real: `python main.py` as Administrator on a Windows 11 laptop (192.168.1.2, Wi-Fi adapter, Npcap capture), connected to the live Firestore project. The attacker was `simulate_attack.py` on the **same laptop**, sending frames with forged sources from the documentation range 198.51.100.0/24 to the laptop's own network adapter.
+**Important:** real capture and a real firewall, but the attack traffic is generated on the protected machine itself. There was no second computer.
+
+**Finding 1 — normal traffic produced weak alerts (2026-10-23).** During about 20 minutes of ordinary use the engine produced 22 model alerts. All were ordinary HTTPS downloads (Google, the local gateway) labelled DoS or Botnet at 36% to 69% confidence (recorded in commit `b7c94fd`). This led to entry 14.
+
+**Finding 2 — the first simulator never reached the capture (2026-10-26).** It used `send()` to the laptop's own IP address. Windows delivers such packets internally through loopback, so the capture adapter saw only the laptop's reset replies and no rule fired. Fixed in commit `121dadd`: the simulator now builds raw frames addressed to the laptop's own MAC address and sends them on the capture adapter with `sendp()`.
+
+Results after the fix:
+
+| Run | Engine mode | Simulated attack | Engine output |
+|---|---|---|---|
+| A | detect-only (default) | port scan (60 SYNs from 198.51.100.42), SYN flood (200 from .66), ICMP flood (200 from .77) | 3 records: PortScan, SynFlood, IcmpFlood; all `trigger=rule`, `action=detect_only`; firewall untouched |
+| B | `--block` | port scan (60 SYNs from 198.51.100.42) | `[BLOCKED] 198.51.100.42`, record `action=blocked`; `Get-NetFirewallRule` lists `CyberSentinel Block 198.51.100.42` |
+| C | `--block` | none: unblock request for 198.51.100.42 | Command `status=done`, message "Firewall rule for 198.51.100.42 removed"; `Get-NetFirewallRule` finds 0 rules for that address |
+
+In run C the request was a `commands` document with the same five fields the dashboard's **Unblock** button writes (action, ip, requested_by, requested_at, status). It was written by a script with the Admin SDK, not by clicking the button.
+
+### What this does and does not show
+
+- Live capture, the rate rules, the decision table, real `netsh` rule creation and removal, and the Firestore command path all work on a real machine.
+- All three detections came from the rules (`conf=None`). The model was not tested by this attack: the simulator's SYNs have no TCP options, a shape the model does not know (entry 12).
+- The unblock was not started from the dashboard's button.
+- Not measured: detection time, CPU, memory.
+- Still untested: attacks from a second machine.
+
+---
+
+## Entry 14 — Alert threshold of 0.70
+
+**Dates:** 2026-10-26 (change), 2026-10-29 (test-set figures)
+**What:** because of entry 13, finding 1, model verdicts below 70% confidence are now ignored: no record, no attack count, no correlation with rule hits (`ALERT_CONFIDENCE = 0.70` in `python-engine/config.py`, commit `b7c94fd`). Rule detections are not affected.
+
+Unseen benign flows (`training/verify_model.py`, the set of entry 8):
+
+| | All verdicts | Verdicts ≥ 0.70 |
+|---|---|---|
+| Benign flows flagged as an attack | 3,833 (0.247%) | 2,498 (0.161%) |
+
+That is 35% fewer false alarms.
+
+Test set of entry 6 (`training/check_test_set.py`), share of each class reported as an attack:
+
+| | All verdicts | Verdicts ≥ 0.70 |
+|---|---|---|
+| All attack flows | 99.35% | 99.14% |
+| Botnet | 59.64% | 50.39% |
+| BruteForce | 97.21% | 96.89% |
+| DDoS | 99.89% | 99.82% |
+| DoS | 99.21% | 98.93% |
+| PortScan | 99.96% | 99.88% |
+| Benign flows flagged | 0.238% | 0.150% |
+
+**Correction:** the commit message of `b7c94fd` gave 99.27% of attacks still reported and Botnet falling from 62% to 57%. Those figures were measured on all 423,394 attack flows, including the flows the model was trained on, so they are too optimistic. The test-set figures above are the ones to report: **99.14% of attacks, Botnet 50.4%.**
+
+**Cost:** Botnet, already the weak class, loses about 9 more points of recall. The other classes lose less than half a point.
+
+---
+
+## Entry 15 — Scripts that re-run the reported numbers
+
+**Date:** 2026-10-29
+**What:** each headline number can now be re-run with one command on the development laptop, without retraining. The dataset CSVs must be in `training/data/MachineLearningCVE/` (they are not in Git).
+
+| Command | Re-runs | Result on 2026-10-29 | Time |
+|---|---|---|---|
+| `python -m pytest -q` (in `python-engine/`) | Unit tests | 182 passed | 14 s |
+| `python training/check_test_set.py` | Entry 6 (new script) | Accuracy 0.9956, macro F1 0.9472, per-class results identical to entry 6; threshold table of entry 14 | 33 s |
+| `python training/verify_model.py` | Entries 7 and 8 | Same SHA-256; 3,833 of 1,553,034 unseen benign flows flagged (0.247%) | 52 s |
+| `python python-engine/tools/check_port_scan.py` | Entry 12 (new script) | Scan probes labelled PortScan: 0 of 600 before the length fix, 600 of 600 after; 130 normal flows (40 HTTPS, 40 DNS, 50 refused connections) stay Benign | 14 s |
+
+`check_port_scan.py` generates its own packets in the shapes of entry 12 (SYN with MSS only and SYN with full options, each probe answered by a reset). They are not the exact packets of entry 12, and its normal-traffic set is smaller (130 flows instead of 650).
+
+---
+
 ## Not yet tested
 
 These are open and will be added as new entries when done:
 
-- **Live traffic.** Entries 11 and 12 used synthetic packets. The engine has still not been run on real captured traffic with real attacks (Part A's step A15); those results are not in this log yet.
+- **Live attacks from a second machine.** Entry 13 ran the engine live, but the attacker was simulated on the same laptop and only the rules fired. Real attacks from another computer, and the model on live attack traffic, are still untested.
 - **A different laptop.** A teammate pulling the repo and loading the model.
 - **Training on some days and testing on others,** which would be a stricter test of generalisation than a random split.
